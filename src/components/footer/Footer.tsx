@@ -83,6 +83,10 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
 
 const Footer: React.FC<FooterProps> = ({ data }) => {
   const [openColumns, setOpenColumns] = useState<Record<string, boolean>>({});
+  const [bookingName, setBookingName] = useState("");
+  const [bookingPhone, setBookingPhone] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const columnsData = (data?.columns && data.columns.length > 0) ? data.columns : DEFAULT_COLUMNS;
 
@@ -91,6 +95,21 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
       ...prev,
       [columnId]: !prev[columnId]
     }));
+  };
+
+  const handleBookingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bookingName.trim() || !bookingPhone.trim()) return;
+
+    // NOTE: 模拟预约数据提交，并在顶部弹出优雅的苹果风格 Toast 气泡
+    setToastMessage(`预约成功！您的称呼为 ${bookingName}，我们将尽快与您取得联系。`);
+    setShowToast(true);
+    setBookingName("");
+    setBookingPhone("");
+
+    setTimeout(() => {
+      setShowToast(false);
+    }, 4000);
   };
 
   // NOTE: 平滑滚动处理函数，当href以#开头时拦截默认跳转，实现平滑滚动
@@ -143,6 +162,38 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
               商务合作：{data?.phone || "15507556167（微信同号）"}
             </span>
           </p>
+        </div>
+
+        {/* 在线预约表单模块 */}
+        <div className={styles.bookingFormWrapper}>
+          <h4 className={styles.bookingTitle}>预约设备体验</h4>
+          <form onSubmit={handleBookingSubmit} className={styles.bookingForm}>
+            <div className={styles.formRow}>
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>称呼 <span className={styles.required}>*</span></label>
+                <input 
+                  type="text" 
+                  placeholder="请输入您的称呼" 
+                  required 
+                  value={bookingName}
+                  onChange={(e) => setBookingName(e.target.value)}
+                  className={styles.formInput} 
+                />
+              </div>
+              <div className={styles.formField}>
+                <label className={styles.formLabel}>电话 <span className={styles.required}>*</span></label>
+                <input 
+                  type="tel" 
+                  placeholder="请输入手机号" 
+                  required 
+                  value={bookingPhone}
+                  onChange={(e) => setBookingPhone(e.target.value)}
+                  className={styles.formInput} 
+                />
+              </div>
+            </div>
+            <button type="submit" className={styles.bookingSubmitBtn}>立即预约</button>
+          </form>
         </div>
 
         {/* Directory Columns */}
@@ -237,6 +288,14 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
           </ul>
         </div>
       </div>
+      {showToast && (
+        <div className={styles.toast}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: "#34c759" }}>
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          {toastMessage}
+        </div>
+      )}
     </footer>
   );
 };
