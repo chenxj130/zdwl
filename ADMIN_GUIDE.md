@@ -20,7 +20,7 @@
   ```
 
 ### 2. 前端服务 (Vite 客户端)
-* 打开终端，进入 `apple-company-website` 目录运行：
+* 打开终端，进入 `zdwl` 目录运行：
   ```bash
   npm run dev
   ```
