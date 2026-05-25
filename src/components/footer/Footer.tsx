@@ -19,6 +19,7 @@ interface FooterProps {
     address: string;
     phone: string;
     copyright: string;
+    bookingUrl?: string;
     columns?: FooterColumn[];
   };
 }
@@ -85,10 +86,12 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
   const [openColumns, setOpenColumns] = useState<Record<string, boolean>>({});
   const [bookingName, setBookingName] = useState("");
   const [bookingPhone, setBookingPhone] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [showToast] = useState(false);
+  const [toastMessage] = useState("");
 
   const columnsData = (data?.columns && data.columns.length > 0) ? data.columns : DEFAULT_COLUMNS;
+  const bookingUrl = data?.bookingUrl || "https://wj.qq.com/s2/15507556167/zdwl";
 
   const toggleColumn = (columnId: string) => {
     setOpenColumns((prev) => ({
@@ -101,15 +104,10 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
     e.preventDefault();
     if (!bookingName.trim() || !bookingPhone.trim()) return;
 
-    // NOTE: 模拟预约数据提交，并在顶部弹出优雅的苹果风格 Toast 气泡
-    setToastMessage(`预约成功！您的称呼为 ${bookingName}，我们将尽快与您取得联系。`);
-    setShowToast(true);
+    // 唤起金数据/腾讯问卷提示模态框，并清空输入
+    setShowModal(true);
     setBookingName("");
     setBookingPhone("");
-
-    setTimeout(() => {
-      setShowToast(false);
-    }, 4000);
   };
 
   // NOTE: 平滑滚动处理函数，当href以#开头时拦截默认跳转，实现平滑滚动
@@ -294,6 +292,41 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
           {toastMessage}
+        </div>
+      )}
+      {showModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalSuccessIcon}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <h3 className={styles.modalTitle}>预约登记成功</h3>
+            </div>
+            <p className={styles.modalDescription}>
+              我们已收到您的预约申请！为了能更精准地了解您的烹饪设备需求，为您提供更切合的智慧烹饪解决方案，诚邀您花 1 分钟填写一份详细体验意向问卷。
+            </p>
+            <div className={styles.modalActions}>
+              <a 
+                href={bookingUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className={styles.modalSubmitBtn}
+                onClick={() => setShowModal(false)}
+              >
+                前往填写详细问卷
+              </a>
+              <button 
+                type="button" 
+                className={styles.modalCloseBtn} 
+                onClick={() => setShowModal(false)}
+              >
+                稍后填写
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </footer>
