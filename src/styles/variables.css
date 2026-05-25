@@ -1,0 +1,73 @@
+:root {
+  /* Font Family Definition */
+  --font-apple: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+  /* Signature Apple Easing Curve */
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: all 0.6s var(--ease-apple);
+
+  /* Layout Spacing */
+  --nav-height: 48px;
+  --section-padding: 36px;
+  --section-padding-mobile: 20px;
+  --bento-gap: 20px;
+
+  /* Typographic Scale */
+  --font-size-hero: 80px;
+  --font-size-hero-sub: 28px;
+  --font-size-h2: 48px;
+  --font-size-h3: 24px;
+  --font-size-body: 17px;
+  --font-size-small: 12px;
+}
+
+/* Light Theme Variables */
+[data-theme="light"] {
+  --color-bg: #f5f5f7;
+  --color-bg-opaque: rgba(245, 245, 247, 0.72);
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f5f5f7;
+  --color-text: #1d1d1f;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #b0b0b5;
+  --color-link: #0066cc;
+  --color-link-hover: #004499;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-border-card: rgba(0, 0, 0, 0.05);
+  --color-btn-bg: #0071e3;
+  --color-btn-text: #ffffff;
+  --color-btn-hover: #147ce5;
+  --color-card-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  --color-accent-red: #ff3b30;
+}
+
+/* Dark Theme Variables (Default) */
+[data-theme="dark"] {
+  --color-bg: #000000;
+  --color-bg-opaque: rgba(0, 0, 0, 0.72);
+  --color-surface: #161617;
+  --color-surface-elevated: #2d2d2e;
+  --color-text: #f5f5f7;
+  --color-text-secondary: #86868b;
+  --color-text-tertiary: #424245;
+  --color-link: #2997ff;
+  --color-link-hover: #54adff;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-card: rgba(255, 255, 255, 0.05);
+  --color-btn-bg: #0071e3;
+  --color-btn-text: #ffffff;
+  --color-btn-hover: #147ce5;
+  --color-card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  --color-accent-red: #ff453a;
+}
+
+/* Responsive typography override */
+@media (max-width: 768px) {
+  :root {
+    --font-size-hero: min(34px, 8.5vw);
+    --font-size-hero-sub: 20px;
+    --font-size-h2: 32px;
+    --font-size-h3: 20px;
+    --font-size-body: 15px;
+  }
+}

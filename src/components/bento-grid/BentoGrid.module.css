@@ -1,0 +1,336 @@
+/* ============================
+   全屏页面级容器
+   核心优势 + 创始人合并为一个全屏 section
+   ============================ */
+.fullPageSection {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--section-padding) 0;
+  transition: background-color 0.5s var(--ease-apple);
+  scroll-margin-top: var(--nav-height);
+}
+
+.sectionHeader {
+  max-width: 1240px;
+  margin: 0 auto 32px auto;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.eyebrow {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.title {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: -0.015em;
+}
+
+/* ============================
+   Bento Grid 卡片布局
+   ============================ */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--bento-gap);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.card {
+  position: relative;
+  background-color: var(--color-surface);
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-card);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px;
+  box-shadow: var(--color-card-shadow);
+  transition: var(--transition-smooth);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-border);
+}
+
+.span8 {
+  grid-column: span 8;
+}
+
+.span4 {
+  grid-column: span 4;
+}
+
+.imageCard {
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+  z-index: 1;
+}
+
+.cardText {
+  position: relative;
+  z-index: 2;
+  max-width: 450px;
+}
+
+.cardCategory {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.cardTitle {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.cardDesc {
+  font-size: 14px;
+  opacity: 0.7;
+  line-height: 1.4;
+}
+
+.cardAction {
+  position: relative;
+  z-index: 2;
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+/* CSS UI: 温控曲线柱状图 */
+.chartContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100px;
+  margin-top: 24px;
+  gap: 8px;
+}
+
+.chartBar {
+  flex: 1;
+  background: linear-gradient(180deg, var(--color-link) 0%, rgba(0, 113, 227, 0.2) 100%);
+  border-radius: 4px 4px 0 0;
+  min-height: 10px;
+  animation: growBar 2s var(--ease-apple) infinite alternate;
+}
+
+@keyframes growBar {
+  0% { transform: scaleY(0.4); transform-origin: bottom; }
+  100% { transform: scaleY(1); transform-origin: bottom; }
+}
+
+/* CSS UI: 模拟终端 */
+.terminalContainer {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  border: 1px solid #333333;
+  padding: 16px;
+  margin-top: 20px;
+  font-family: Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  color: #39c5bb;
+  text-align: left;
+  overflow: hidden;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.terminalHeader {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.redDot { background-color: #ff5f56; }
+.yellowDot { background-color: #ffbd2e; }
+.greenDot { background-color: #27c93f; }
+
+.terminalLine {
+  color: #abb2bf;
+  animation: typing 3s steps(40) infinite;
+  white-space: nowrap;
+}
+
+.terminalCommand {
+  color: #61afef;
+}
+
+.terminalOutput {
+  color: #98c379;
+}
+
+/* ============================
+   创始人卡片样式
+   ============================ */
+.founderCard {
+  background-color: #0b0b0c;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--color-border-card);
+  /* NOTE: scroll-margin-top 确保「创始人」导航锚点精确滚动至此卡片位置 */
+  scroll-margin-top: calc(var(--nav-height) + 20px);
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  min-height: 400px;
+}
+
+/* 创始人人像定位 */
+.founderImage {
+  position: absolute;
+  top: 0;
+  right: -24px;
+  width: 72%;
+  height: 100%;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  z-index: 1;
+  opacity: 0.85;
+}
+
+/* 双向渐变蒙版：
+   1. 从左到右的偏暗色过渡，确保左侧文字区域的高对比度，同时右侧保留透明显示人脸
+   2. 从上到下加深底部的遮罩，保护勋章文本的阅读
+*/
+.founderOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #0b0b0c 0%, rgba(11, 11, 12, 0.95) 45%, rgba(11, 11, 12, 0.25) 75%, rgba(11, 11, 12, 0.1) 100%),
+              linear-gradient(180deg, rgba(11, 11, 12, 0.1) 0%, rgba(11, 11, 12, 0.7) 100%);
+  z-index: 2;
+}
+
+.founderContent {
+  position: relative;
+  z-index: 3;
+  max-width: 65%; /* 限制宽度在左侧 65%，宽屏下可容纳更多文字并合理避开人脸 */
+  text-align: left;
+}
+
+.founderSubtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-link);
+  letter-spacing: 0.05em;
+  display: block;
+}
+
+.founderBadge {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 24px;
+  position: relative;
+  z-index: 3;
+  width: fit-content; /* 自适应大小，保留右侧空间 */
+}
+
+.badgeLine {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.badgeLabel {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+/* ============================
+   响应式适配
+   ============================ */
+@media (max-width: 1024px) {
+  .gridContainer {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fullPageSection {
+    min-height: auto;
+    padding: var(--section-padding-mobile) 0;
+  }
+
+  .gridContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .span8, .span4 {
+    grid-column: span 12;
+  }
+
+  .card {
+    min-height: 240px;
+  }
+
+  /* 移动端创始人卡片优化 */
+  .founderCard {
+    min-height: 380px;
+  }
+
+  .founderImage {
+    width: 60%;
+    right: -10px;
+    opacity: 0.7;
+  }
+
+  .founderContent {
+    max-width: 80%;
+  }
+}

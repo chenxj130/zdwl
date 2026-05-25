@@ -1,0 +1,20 @@
+.plasmaTextContainer {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.textWrapper {
+  position: relative;
+  z-index: 1; /* Keep text rendered underneath particles but visible */
+}
+
+.plasmaCanvas {
+  position: absolute;
+  top: -8px; /* Slightly overflow to allow particles to disperse past margins */
+  left: -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 16px);
+  z-index: 2; /* Overlay particles on top of the text for a premium layered depth */
+  pointer-events: none; /* Make canvas fully click-through to allow selecting/copying text */
+}

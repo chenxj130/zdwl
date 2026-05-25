@@ -1,0 +1,114 @@
+@import "./variables.css";
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-apple);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+  letter-spacing: -0.022em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  transition: background-color 0.5s var(--ease-apple), color 0.5s var(--ease-apple);
+}
+
+/* Scrollbar Customization (Apple style: narrow and rounded) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.1;
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  transition: var(--transition-smooth);
+}
+
+/* Utility Layout Classes */
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Native CSS Scroll-driven Animations */
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* CSS Scroll-driven animations linking view timelines */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-on-scroll {
+    animation: reveal-scale linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 30%;
+  }
+}
+
+/* 强制电脑端排版适配（在物理移动端强行预览电脑端） */
+html.forceDesktop, body.forceDesktop {
+  width: 1280px !important;
+  min-width: 1280px !important;
+  overflow-x: auto !important;
+}
+
+html.forceDesktop {
+  --font-size-hero: 80px !important;
+  --font-size-hero-sub: 28px !important;
+  --font-size-h2: 48px !important;
+  --font-size-h3: 24px !important;
+  --font-size-body: 17px !important;
+}
+

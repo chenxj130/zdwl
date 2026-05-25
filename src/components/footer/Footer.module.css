@@ -1,0 +1,213 @@
+.footerContainer {
+  background-color: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  padding: 32px 0 24px 0;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  transition: background-color 0.5s var(--ease-apple), border-color 0.5s var(--ease-apple);
+  scroll-margin-top: var(--nav-height);
+}
+
+.footerContent {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Introduction Legal Note (Classic Apple detail) */
+.introText {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+  line-height: 1.6;
+}
+
+/* Link Columns Grid */
+.linksGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.columnTitleLink {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.columnTitleLink:hover .columnTitle {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.columnTitle {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0;
+  display: block;
+  font-size: 12px;
+  cursor: default;
+  transition: color 0.3s var(--ease-apple);
+}
+
+.columnTitleLink:hover .columnTitle {
+  cursor: pointer;
+}
+
+/* NOTE: 移动端折叠触发按钮默认在桌面端隐藏 */
+.mobileToggleBtn {
+  display: none;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: color 0.3s var(--ease-apple);
+  outline: none;
+}
+
+.mobileToggleBtn:hover {
+  color: var(--color-text);
+}
+
+.mobileToggleIcon {
+  display: inline-block;
+  transition: transform 0.3s var(--ease-apple);
+  font-family: monospace;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.iconRotated {
+  transform: rotate(45deg); /* + 旋转 45 度变成类似 x / x */
+}
+
+.linksList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.linkItem a {
+  color: var(--color-text-secondary);
+  transition: var(--transition-smooth);
+}
+
+.linkItem a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+/* Legal/Copyright Bar */
+.bottomBar {
+  border-top: 1px solid var(--color-border);
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.copyright {
+  line-height: 1.5;
+}
+
+.legalLinks {
+  display: flex;
+  list-style: none;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legalItem a {
+  color: var(--color-text-secondary);
+}
+
+.legalItem a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .linksGrid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .column {
+    border-bottom: 1px solid var(--color-border);
+    padding: 12px 0;
+  }
+  
+  .columnHeader {
+    margin-bottom: 0;
+    padding: 4px 0;
+  }
+  
+  .columnTitle {
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  .mobileToggleBtn {
+    display: flex;
+  }
+  
+  .linksList {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    gap: 8px;
+    margin-top: 0;
+    transition: height 0.3s var(--ease-apple), opacity 0.3s var(--ease-apple), margin-top 0.3s var(--ease-apple);
+  }
+  
+  .linksListOpen {
+    height: auto;
+    opacity: 1;
+    margin-top: 12px;
+    padding-bottom: 8px;
+  }
+  
+  .bottomBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* 透明玻璃毛边框（毛玻璃效果）Logo 包裹框 */
+.glassLogoWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.5s var(--ease-apple), background-color 0.5s var(--ease-apple);
+}
+
+[data-theme="light"] .glassLogoWrapper {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"] .glassLogoWrapper {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.04);
+}

@@ -1,0 +1,352 @@
+.simulatorWrapper {
+  width: 100%;
+  height: calc(100vh - 38px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background-color: #0b0b0c;
+  transition: background-color 0.5s var(--ease-apple);
+}
+
+:global([data-theme="light"]) .simulatorWrapper {
+  background-color: #f0f0f2;
+}
+
+/* 苹果风格炫彩流光粒子背景 */
+.auroraBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  filter: blur(100px);
+  opacity: 0.45;
+  transition: opacity 0.5s var(--ease-apple);
+}
+
+:global([data-theme="light"]) .auroraBackground {
+  opacity: 0.25;
+}
+
+.auroraBlob {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  animation: float 20s infinite alternate ease-in-out;
+}
+
+:global([data-theme="light"]) .auroraBlob {
+  mix-blend-mode: multiply;
+}
+
+.blob1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(155, 81, 224, 0.45) 0%, rgba(0,0,0,0) 70%);
+  top: -10%;
+  left: 10%;
+}
+
+:global([data-theme="light"]) .blob1 {
+  background: radial-gradient(circle, rgba(220, 200, 255, 0.6) 0%, rgba(255,255,255,0) 70%);
+}
+
+.blob2 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(41, 151, 255, 0.4) 0%, rgba(0,0,0,0) 70%);
+  bottom: -20%;
+  right: 10%;
+  animation-delay: -5s;
+}
+
+:global([data-theme="light"]) .blob2 {
+  background: radial-gradient(circle, rgba(195, 225, 255, 0.6) 0%, rgba(255,255,255,0) 70%);
+}
+
+.blob3 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(255, 59, 48, 0.3) 0%, rgba(0,0,0,0) 70%);
+  top: 30%;
+  left: 45%;
+  animation-delay: -10s;
+}
+
+:global([data-theme="light"]) .blob3 {
+  background: radial-gradient(circle, rgba(255, 200, 200, 0.4) 0%, rgba(255,255,255,0) 70%);
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate(40px, -60px) scale(1.15) rotate(180deg);
+  }
+  100% {
+    transform: translate(-30px, 40px) scale(0.9) rotate(360deg);
+  }
+}
+
+/* 模拟器本体容器 */
+.simulatorContainer {
+  position: relative;
+  z-index: 2;
+  transform: scale(0.85); /* 缩放使模拟器在各种大屏下能完美塞入 */
+  transform-origin: center;
+}
+
+@media (min-height: 950px) {
+  .simulatorContainer {
+    transform: scale(0.95);
+  }
+}
+
+@media (min-height: 1050px) {
+  .simulatorContainer {
+    transform: scale(1);
+  }
+}
+
+/* iPhone 15 Pro 机壳 */
+.phoneBody {
+  width: 400px;
+  height: 852px;
+  border-radius: 54px;
+  position: relative;
+  padding: 12px; /* 钛金属外框厚度 */
+  box-sizing: border-box;
+
+  /* 钛原色金属高光拉丝光泽 (暗色主题默认) */
+  background: linear-gradient(135deg, 
+    #3c3c3e 0%, 
+    #2c2c2e 15%, 
+    #4a4a4c 30%, 
+    #242426 50%, 
+    #3c3c3e 70%, 
+    #1c1c1e 85%, 
+    #48484a 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.8),
+    inset 0 0 4px 1px rgba(255, 255, 255, 0.25),
+    inset 0 0 12px 2px rgba(0, 0, 0, 0.6);
+  transition: all 0.5s var(--ease-apple);
+}
+
+/* 亮色主题：钛白色/银钛金机壳 */
+:global([data-theme="light"]) .phoneBody {
+  background: linear-gradient(135deg, 
+    #e3e3e5 0%, 
+    #d1d1d6 15%, 
+    #ededf0 30%, 
+    #c7c7cc 50%, 
+    #e5e5ea 70%, 
+    #aeaeaf 85%, 
+    #ededf0 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.2),
+    inset 0 0 4px 1px rgba(255, 255, 255, 0.8),
+    inset 0 0 12px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* 侧边物理按键 */
+.physicalKey {
+  position: absolute;
+  width: 3px;
+  background: linear-gradient(to bottom, #48484a, #2c2c2e, #1c1c1e);
+  border-radius: 3px 0 0 3px;
+  box-shadow: -1px 2px 3px rgba(0, 0, 0, 0.4);
+  transition: all 0.5s var(--ease-apple);
+}
+
+:global([data-theme="light"]) .physicalKey {
+  background: linear-gradient(to bottom, #d1d1d6, #aeaeaf, #8e8e93);
+  box-shadow: -1px 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* 左侧按键：动作键 (Action Button) */
+.actionKey {
+  left: -3px;
+  top: 172px;
+  height: 32px;
+}
+
+/* 左侧按键：音量加 (Volume Up) */
+.volumeUpKey {
+  left: -3px;
+  top: 228px;
+  height: 58px;
+}
+
+/* 左侧按键：音量减 (Volume Down) */
+.volumeDownKey {
+  left: -3px;
+  top: 300px;
+  height: 58px;
+}
+
+/* 右侧按键：电源键 (Power Button) */
+.powerKey {
+  right: -3px;
+  top: 262px;
+  height: 84px;
+  border-radius: 0 3px 3px 0;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
+}
+
+:global([data-theme="light"]) .powerKey {
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* 屏幕钢化膜/屏幕内侧高光边缘 */
+.screenInnerBorder {
+  width: 100%;
+  height: 100%;
+  border-radius: 43px;
+  background-color: #000000;
+  border: 4px solid #000000; /* 屏幕超窄黑边 */
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="light"]) .screenInnerBorder {
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 灵动岛 (Dynamic Island) */
+.dynamicIsland {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 29px;
+  background-color: #000000;
+  border-radius: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border: 0.5px solid rgba(255, 255, 255, 0.03);
+}
+
+.cameraCore {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #0e121a 0%, #030508 60%, #000000 100%);
+  border: 0.5px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.sensorCore {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #040810 0%, #000000 100%);
+  opacity: 0.5;
+}
+
+/* 顶部微缝听筒 */
+.speakerGrill {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 2px;
+  background-color: #1c1c1e;
+  border-radius: 1px;
+  z-index: 99;
+}
+
+/* 屏幕显示区域 */
+.screenArea {
+  width: 100%;
+  height: 100%;
+  border-radius: 39px;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  background-color: var(--color-bg);
+}
+
+/* 加载动画 */
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--color-link);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  color: #86868b;
+  font-family: var(--font-apple);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* iframe 视口 */
+.phoneIframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: var(--color-bg);
+  /* 隐藏 iframe 的滚动条，或通过 CSS 保持流畅 */
+  display: block;
+}
+
+/* 底部虚拟 Home 指示条 */
+.homeIndicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background-color: rgba(255, 255, 255, 0.45);
+  border-radius: 3px;
+  z-index: 100;
+  pointer-events: none;
+  transition: background-color 0.5s var(--ease-apple);
+}
+
+:global([data-theme="light"]) .homeIndicator {
+  background-color: rgba(0, 0, 0, 0.35);
+}

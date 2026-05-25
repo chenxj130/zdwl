@@ -1,0 +1,794 @@
+.showcaseSection {
+  background-color: var(--color-bg);
+  height: 100vh;
+  min-height: 580px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 0;
+  position: relative;
+  transition: background-color 0.5s var(--ease-apple);
+  scroll-margin-top: var(--nav-height);
+  box-sizing: border-box;
+}
+
+.sectionHeader {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto 24px auto;
+  text-align: center;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.eyebrow {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.title {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: -0.015em;
+}
+
+/* 跑马灯轨道包裹层，配置两侧苹果风柔和渐变罩层 */
+.sliderWrapper {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 边缘渐变淡出罩层：贴合最大宽度边界，防止卡片大图或文字在边缘产生生硬切断 */
+.edgeFadeLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-bg) 0%, transparent 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.edgeFadeRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(270deg, var(--color-bg) 0%, transparent 100%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* 隐藏横向滚动条，在移动端开启原生滚动，桌面端则隐藏滚动条以供手动/自动 JS 平滑滚动 */
+.sliderContainer {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox 隐藏 */
+  -ms-overflow-style: none; /* IE/Edge 隐藏 */
+  padding-top: 24px;
+  padding-bottom: 24px;
+  padding-left: calc((100vw - 1240px) / 2 + 24px);
+  padding-right: calc((100vw - 1240px) / 2 + 24px);
+  user-select: none;
+  -webkit-user-select: none;
+  box-sizing: border-box;
+}
+
+/* 当屏幕小于 1240px 时，回退到固定的左右 24px padding，对齐版心 */
+@media (max-width: 1240px) {
+  .sliderContainer {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+.sliderContainer::-webkit-scrollbar {
+  display: none; /* Chrome/Safari 隐藏 */
+}
+
+.sliderTrack {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+/* 极简高奢控制面板（1:1 复刻苹果官网两侧悬浮交互） */
+.arrowBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-card);
+  color: var(--color-text);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 25; /* 高于卡片与边框罩层 */
+  opacity: 0.75; /* 默认轻微半透明 */
+}
+
+/* 当鼠标进入 slider 区域时，按钮完全亮起 */
+.sliderWrapper:hover .arrowBtn {
+  opacity: 1;
+}
+
+.prevBtn {
+  left: calc((100vw - 1240px) / 2 + 24px);
+}
+
+.nextBtn {
+  right: calc((100vw - 1240px) / 2 + 24px);
+}
+
+@media (max-width: 1240px) {
+  .prevBtn {
+    left: 24px;
+  }
+  .nextBtn {
+    right: 24px;
+  }
+}
+
+.arrowBtn:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+}
+
+.arrowBtn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+
+
+.slideCard {
+  flex: 0 0 760px; /* 大宽屏卡片规格 */
+  background-color: var(--color-surface);
+  border-radius: 24px;
+  border: 1px solid var(--color-border-card);
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  overflow: hidden;
+  height: 390px;
+  position: relative;
+  
+  /* 
+     NOTE: 摒弃了 gap 属性，采用 margin-right 代替。
+     单卡片占用空间是固定值，这保证了 -50% 平移距离可以完美做到几何对称对齐，不发生闪烁。
+  */
+  margin-right: 30px;
+  
+  opacity: 1; /* 跑马灯滚动中，所有卡片均保持最清晰的不透明度 */
+  
+  /* 初始 3D 倾斜和缩放配置 */
+  transform: perspective(1200px) 
+             rotateX(var(--rx, 0deg)) 
+             rotateY(var(--ry, 0deg)) 
+             scale(1);
+             
+  /* 悬停放大和偏转采用苹果官方经典的柔和缓动曲线 */
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              box-shadow 0.4s var(--ease-apple);
+  will-change: transform;
+  z-index: 1;
+}
+
+/* 鼠标停留在对应产品卡片时：产品滚动动效暂停，卡片平滑放大 5% 并提升投影层次 */
+.slideCard:hover {
+  transform: perspective(1200px) 
+             rotateX(var(--rx, 0deg)) 
+             rotateY(var(--ry, 0deg)) 
+             scale(1.05); /* 平滑放大 5% */
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.22);
+  z-index: 10; /* 悬浮卡片置于顶层，不被相邻卡片和淡出层遮挡 */
+}
+
+/* 流光掠过闪烁效果 */
+.slideCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0) 70%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  z-index: 5;
+  pointer-events: none;
+  transition: none;
+}
+
+.slideCard:hover::before {
+  left: 150%;
+  transition: left 1.2s var(--ease-apple);
+}
+
+.cardContent {
+  flex: 1.25;
+  padding: 20px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+}
+
+.clientName {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-link);
+  margin-bottom: 2px;
+  display: block;
+}
+
+.caseTitle {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.caseDesc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 12px;
+  margin-top: 14px;
+  width: 100%;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.fullWidthStat {
+  grid-column: span 2;
+}
+
+.statValueContainer {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 1px;
+}
+
+.statHighlight {
+  font-size: clamp(16px, 1.8vw, 20px);
+  font-weight: 700;
+  color: var(--color-link);
+  background: linear-gradient(135deg, var(--color-text) 30%, var(--color-link) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.15;
+  display: inline-block;
+  filter: drop-shadow(0 1px 4px rgba(41, 151, 255, 0.1));
+}
+
+.statText {
+  font-size: clamp(11px, 1.2vw, 13px);
+  color: var(--color-text-secondary);
+  line-height: 1.15;
+}
+
+.statLabel {
+  font-size: clamp(10px, 1.1vw, 12px);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.cardImageWrapper {
+  flex: 0.9;
+  background-color: #ffffff;
+  position: relative;
+  min-width: 320px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--color-border-card);
+  z-index: 2;
+  perspective: 1000px;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.035); /* 苹果画廊内凹渐变质感 */
+}
+
+/* 苹果风柔和接触阴影 */
+.cardImageWrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58%;
+  height: 10px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.14) 0%, transparent 80%);
+  filter: blur(3.5px);
+  pointer-events: none;
+  z-index: 1;
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease;
+}
+
+.cardImage {
+  width: 95%;
+  height: 95%;
+  object-fit: contain;
+  z-index: 3;
+  filter: contrast(1.02) brightness(1.01);
+  
+  /* 3D 浮动与滑动平移视差 */
+  transform: translateZ(15px) 
+             rotateY(calc(var(--ry, 0deg) * 0.15))
+             rotateX(calc(var(--rx, 0deg) * 0.15));
+             
+  transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+/* 激活悬停状态时，仅作温和的三维深度微拉，展现完美的精细画面 */
+.slideCard:hover .cardImage {
+  transform: translateZ(25px) 
+             rotateY(calc(var(--ry, 0deg) * 0.22))
+             rotateX(calc(var(--rx, 0deg) * 0.22));
+}
+
+/* 悬停时阴影连动扩大并微淡 */
+.slideCard:hover .cardImageWrapper::after {
+  transform: translateX(-50%) scaleX(1.06) scaleY(0.85);
+  opacity: 0.75;
+}
+
+@media (max-width: 1024px) {
+  .slideCard {
+    flex: 0 0 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .showcaseSection {
+    min-height: auto;
+    padding: var(--section-padding-mobile) 0;
+  }
+  
+  .sliderWrapper {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sliderContainer {
+    padding-left: 24px;
+    padding-right: 24px;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 24px;
+    overflow-x: auto;
+  }
+  
+  .sliderTrack {
+    flex-direction: row;
+    width: max-content !important;
+    padding: 0;
+  }
+  
+  .slideCard {
+    flex: 0 0 310px !important;
+    width: 310px !important;
+    height: auto !important; /* 自适应内容高度，防止文字超出截断 */
+    min-height: 480px !important;
+    flex-direction: column-reverse !important;
+    justify-content: flex-end !important; /* 将内容向物理顶部对齐，多余空间留到底部 */
+    transform: none !important;
+    opacity: 1 !important;
+    margin-right: 16px !important;
+    margin-bottom: 0 !important;
+    scroll-snap-align: start !important;
+    border-radius: 20px !important;
+    box-sizing: border-box !important;
+  }
+
+  .slideCard:last-child {
+    margin-right: 0 !important;
+  }
+  
+  .cardContent {
+    padding: 16px 20px !important;
+    width: 100% !important;
+    flex: none !important;
+    box-sizing: border-box !important;
+    justify-content: flex-start !important;
+  }
+  
+  .cardImageWrapper {
+    height: auto !important; /* 取消 200px 固定高度，自适应填充 */
+    width: 100% !important;
+    flex: 1 1 auto !important; /* 占据所有富余的卡片高度空间，补全背景 */
+    min-width: 0 !important;
+    border-left: none !important;
+    border-bottom: 1px solid var(--color-border-card) !important;
+    box-sizing: border-box !important;
+    background-color: #ffffff !important; /* 强行白色背景声明 */
+    border-top-left-radius: 19px !important; /* 贴合顶部卡片圆角 */
+    border-top-right-radius: 19px !important;
+    overflow: hidden !important;
+  }
+
+  /* 移动端专属图片尺寸重置 */
+  .cardImage {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 200px !important; /* 限制图片高度，避免拉伸过大 */
+    transform: none !important;
+    padding: 16px !important; /* 缩减 padding 让产品 3D 渲染图在手机上显示更饱满 */
+    box-sizing: border-box !important;
+  }
+  
+  .edgeFadeLeft, .edgeFadeRight {
+    display: none !important; /* 移动端布局禁用边缘渐变 */
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr) !important; /* 恢复为两列布局 */
+    gap: 8px 12px !important;
+    margin-top: 10px !important;
+  }
+  
+  .fullWidthStat {
+    grid-column: span 2 !important; /* 长参数独占一行 */
+  }
+
+  .statHighlight {
+    font-size: 15px !important; /* 适当调小数值字号，防止换行折行 */
+  }
+
+  .statLabel {
+    font-size: 10px !important; /* 适当调小 Label 字号 */
+  }
+
+  .statText {
+    font-size: 11px !important;
+  }
+
+  .caseTitle {
+    font-size: 16px !important;
+    margin-bottom: 4px !important;
+  }
+  
+  .caseDesc {
+    font-size: 11px !important;
+    margin-bottom: 8px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* 移动端专属的左右翻页箭头按钮显示与定位 */
+  .arrowBtn {
+    width: 36px !important;
+    height: 36px !important;
+    opacity: 0.8 !important; /* 手机端默认提高其可见性 */
+    background: var(--color-surface) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    display: flex !important; /* 强制在手机端也渲染出来 */
+    z-index: 999 !important; /* 显著提升 z-index 层级，确保可点击 */
+    transform: translateY(-50%) translateZ(100px) !important; /* 增加 3D 深度 */
+    pointer-events: auto !important;
+  }
+
+  .prevBtn, .nextBtn {
+    display: flex !important;
+    top: 100px !important; /* 竖直居中定位在上方 200px 图片区域的正中央线，防止压到文字 */
+    transform: translateY(-50%) !important;
+  }
+
+  .prevBtn {
+    left: 8px !important;
+    right: auto !important;
+  }
+
+  .nextBtn {
+    right: 8px !important;
+    left: auto !important;
+  }
+
+  /* 缩小移动端箭头图标大小 */
+  .arrowBtn svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* 底部圆点分页指示器样式，苹果官网的高奢过渡设计 */
+  .paginationDots {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+    width: 100% !important;
+  }
+
+  .dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 4px !important;
+    background-color: var(--color-text-tertiary) !important;
+    border: none !important;
+    padding: 0 !important;
+    opacity: 0.4 !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  }
+
+  .dotActive {
+    width: 18px !important; /* 激活时水平拉伸为胶囊形状 */
+    background-color: var(--color-link) !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ==========================================
+   音视频配置及其高级微动效 (Media Features)
+   ========================================== */
+
+.mediaActions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.mediaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mediaBtn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mediaBtnActive {
+  background: var(--color-link) !important;
+  border-color: var(--color-link) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.3) !important;
+}
+
+.mediaIcon {
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.mediaBtn:hover .mediaIcon {
+  transform: scale(1.1);
+}
+
+/* 4柱动态声波动画 */
+.waveAnimation {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.2px;
+  width: 14px;
+  height: 12px;
+}
+
+.waveBar {
+  width: 2px;
+  height: 100%;
+  background-color: currentColor;
+  border-radius: 1px;
+  animation: wave 0.8s ease-in-out infinite alternate;
+  transform-origin: bottom;
+}
+
+.waveBar:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.waveBar:nth-child(2) {
+  animation-delay: 0.35s;
+}
+.waveBar:nth-child(3) {
+  animation-delay: 0.55s;
+}
+.waveBar:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+@keyframes wave {
+  0% {
+    transform: scaleY(0.2);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+/* 高奢毛玻璃视频 Modal 样式 */
+.videoModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.videoModalContent {
+  position: relative;
+  width: 80vw;
+  max-width: 1000px;
+  aspect-ratio: 16 / 9;
+  background-color: #000000;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transform: scale(0.92);
+  opacity: 0;
+  animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.closeBtn:active {
+  transform: scale(0.95);
+}
+
+.videoWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.videoPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .videoModalContent {
+    width: 95vw;
+  }
+  
+  .closeBtn {
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+  }
+  
+  .mediaActions {
+    margin-bottom: 16px;
+  }
+}
+
+/* 减弱动效适配 */
+@media (prefers-reduced-motion: reduce) {
+  .mediaBtn, .mediaIcon, .closeBtn {
+    transition: none !important;
+  }
+  
+  .waveBar {
+    animation: none !important;
+  }
+  
+  .videoModalOverlay {
+    animation: fadeIn 0.1s ease-out forwards;
+  }
+  
+  .videoModalContent {
+    animation: fadeIn 0.1s ease-out forwards;
+    transform: none !important;
+  }
+}
