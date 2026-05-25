@@ -91,7 +91,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
   const [toastMessage] = useState("");
 
   const columnsData = (data?.columns && data.columns.length > 0) ? data.columns : DEFAULT_COLUMNS;
-  const bookingUrl = data?.bookingUrl || "https://wj.qq.com/s2/15507556167/zdwl";
+  const bookingUrl = data?.bookingUrl || "https://wj.qq.com/s2/15507556/167/zdwl";
 
   const toggleColumn = (columnId: string) => {
     setOpenColumns((prev) => ({
