@@ -181,7 +181,7 @@ const App: React.FC = () => {
       return modeInUrl;
     }
     const savedMode = localStorage.getItem("layout_mode");
-    return (savedMode === "desktop" || savedMode === "mobile") ? savedMode : "desktop";
+    return (savedMode === "desktop" || savedMode === "mobile") ? savedMode : "mobile";
   });
 
   // NOTE: 检测是否为物理小屏设备 (<= 768px)
