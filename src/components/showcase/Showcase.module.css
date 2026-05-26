@@ -440,7 +440,7 @@
     flex: 0 0 310px !important;
     width: 310px !important;
     height: auto !important; /* 自适应内容高度，防止文字超出截断 */
-    min-height: 480px !important;
+    min-height: 560px !important;
     display: grid !important;
     grid-template-rows: auto auto !important; /* 第一行图片，第二行文字内容 */
     transform: none !important;
@@ -605,7 +605,8 @@
   }
   
   .showcaseSection[data-lang="en"] .caseDesc {
-    margin-bottom: 6px !important;
+    font-size: 10.5px !important;
+    margin-bottom: 4px !important;
   }
 
   .showcaseSection[data-lang="en"] .caseTitle {
