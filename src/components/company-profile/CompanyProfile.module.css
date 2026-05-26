@@ -58,12 +58,16 @@
   .title {
     font-size: 24px;
     margin-bottom: 16px;
+    padding: 0 16px;
   }
 
   .description {
-    font-size: 17px;
-    line-height: 1.6;
-    text-align: justify;
-    text-indent: 0; /* 移动端重置为无缩进，以便阅读 */
+    font-size: min(15px, 4.2vw) !important;
+    line-height: 1.65 !important;
+    text-align: left !important; /* 避免两端对齐在英文下导致的超大单词间隙 */
+    text-indent: 0 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    padding: 0 16px;
   }
 }

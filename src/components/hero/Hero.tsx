@@ -67,7 +67,7 @@ const Hero: React.FC<HeroProps> = ({ data, about, lang = "zh" }) => {
           </a>
         </div>
       </div>
-      {about && <CompanyProfile data={about} />}
+      {about && <CompanyProfile data={about} lang={lang} />}
     </section>
   );
 };

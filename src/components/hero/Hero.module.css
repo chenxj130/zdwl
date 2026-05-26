@@ -148,12 +148,20 @@
   }
   
   .title {
-    white-space: nowrap !important;
+    white-space: normal !important; /* 允许自动换行，解决英文超长溢出裁剪的问题 */
+    font-size: min(32px, 8.5vw) !important; /* 弹性标题字号，自适应手机屏幕 */
+    line-height: 1.25 !important;
+    padding: 0 16px;
   }
   
   .subtitle {
-    text-align: center;
-    text-indent: 0;
+    text-align: center !important;
+    text-indent: 0 !important;
+    font-size: min(15px, 4.2vw) !important; /* 移动端英文副标题字号微调，避免过大 */
+    line-height: 1.6 !important;
+    padding: 0 16px;
+    word-break: break-word !important; /* 单词换行保护 */
+    overflow-wrap: break-word !important;
   }
   
   .ctas {

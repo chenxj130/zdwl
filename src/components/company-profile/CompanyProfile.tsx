@@ -6,26 +6,33 @@ interface CompanyProfileProps {
     title: string;
     content: string;
   };
+  lang?: "zh" | "en";
 }
 
 /**
  * 公司简介组件
  * 采用 Apple 风格的大号字排版，在桌面端支持 1240px 两端对齐和 2em 首行缩进
  */
-const CompanyProfile: React.FC<CompanyProfileProps> = ({ data }) => {
+const CompanyProfile: React.FC<CompanyProfileProps> = ({ data, lang = "zh" }) => {
   // 如果没有数据传入，渲染空以保持页面健壮性
   if (!data) return null;
 
   const renderContent = (text: string) => {
     if (!text) return null;
     const cleanText = text.trim();
-    // 使用正则切分目标高亮词汇
-    const parts = cleanText.split(/(标准化、规模化、数智化|中餐标准化多场景商业落地)/g);
+    
+    // NOTE: 根据中英文不同，切分匹配相应的核心优势高亮短语
+    const regex = lang === "zh"
+      ? /(标准化、规模化、数智化|中餐标准化多场景商业落地)/g
+      : /(Chinese culinary standardization|standardization, scalability, and digitalization)/gi;
+
+    const parts = cleanText.split(regex);
     return parts.map((part, idx) => {
-      if (
-        part === "标准化、规模化、数智化" ||
-        part === "中餐标准化多场景商业落地"
-      ) {
+      const isHighlight = lang === "zh"
+        ? (part === "标准化、规模化、数智化" || part === "中餐标准化多场景商业落地")
+        : /Chinese culinary standardization|standardization, scalability, and digitalization/i.test(part);
+
+      if (isHighlight) {
         return (
           <span key={idx} className={styles.highlightText}>
             {part}
