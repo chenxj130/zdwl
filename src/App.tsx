@@ -231,11 +231,11 @@ const App: React.FC = () => {
           onLangChange={handleLangChange}
         />
         <main style={{ marginTop: "0" }}>
-          <Hero data={siteData.hero} about={siteData.about} />
+          <Hero data={siteData.hero} about={siteData.about} lang={lang} />
           <Showcase data={siteData.showcase} lang={lang} />
-          <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} />
+          <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} lang={lang} />
         </main>
-        <Footer data={siteData.footer} />
+        <Footer data={siteData.footer} lang={lang} />
       </>
     );
   }
@@ -261,11 +261,11 @@ const App: React.FC = () => {
             onLangChange={handleLangChange}
           />
           <main style={{ marginTop: "0" }}>
-            <Hero data={siteData.hero} about={siteData.about} />
+            <Hero data={siteData.hero} about={siteData.about} lang={lang} />
             <Showcase data={siteData.showcase} lang={lang} />
-            <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} />
+            <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} lang={lang} />
           </main>
-          <Footer data={siteData.footer} />
+          <Footer data={siteData.footer} lang={lang} />
         </>
       )}
 
