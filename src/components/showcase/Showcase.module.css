@@ -172,7 +172,7 @@
   box-shadow: var(--color-card-shadow);
   display: flex;
   overflow: hidden;
-  height: 390px;
+  height: 420px;
   position: relative;
   
   /* 
@@ -381,6 +381,28 @@
   opacity: 0.75;
 }
 
+/* 针对英文版的特定样式微调，防溢出和截断 */
+.showcaseSection[data-lang="en"] .cardContent {
+  padding: 16px 24px;
+}
+
+.showcaseSection[data-lang="en"] .caseDesc {
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.showcaseSection[data-lang="en"] .statsGrid {
+  gap: 2px 10px;
+}
+
+.showcaseSection[data-lang="en"] .statLabel {
+  font-size: clamp(9px, 1.0vw, 11px);
+}
+
+.showcaseSection[data-lang="en"] .statText {
+  font-size: clamp(10px, 1.1vw, 12px);
+}
+
 @media (max-width: 1024px) {
   .slideCard {
     flex: 0 0 90%;
@@ -443,9 +465,9 @@
   }
   
   .cardImageWrapper {
-    height: auto !important; /* 取消 200px 固定高度，自适应填充 */
+    height: 180px !important; /* 固定高度，避免弹性拉伸导致的整体高度死锁截断 */
     width: 100% !important;
-    flex: 1 1 auto !important; /* 占据所有富余的卡片高度空间，补全背景 */
+    flex: none !important; /* 清除伸缩，使卡片高度完全由图片高度 + 文本实际高度撑开 */
     min-width: 0 !important;
     border-left: none !important;
     border-bottom: 1px solid var(--color-border-card) !important;

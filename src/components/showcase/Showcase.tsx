@@ -382,7 +382,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ data, lang = "zh" }) => {
   };
 
   return (
-    <section id="showcase" className={styles.showcaseSection}>
+    <section id="showcase" className={styles.showcaseSection} data-lang={lang}>
       <div className={styles.sectionHeader}>
         <span className={styles.eyebrow}>
           <PlasmaText glowColor="blue">{data?.eyebrow || "产品系列"}</PlasmaText>
