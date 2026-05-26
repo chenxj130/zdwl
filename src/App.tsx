@@ -8,14 +8,34 @@ import AdminPanel, { type SiteData } from "./components/admin-panel/AdminPanel";
 import LayoutSwitcher from "./components/layout-switcher/LayoutSwitcher";
 import PhoneSimulator from "./components/phone-simulator/PhoneSimulator";
 import customSiteData from "./site_data.json";
+import enSiteData from "./site_data_en.json";
 
 const DEFAULT_SITE_DATA: SiteData = customSiteData;
+const DEFAULT_SITE_DATA_EN: SiteData = enSiteData;
 
 const App: React.FC = () => {
   // Theme state
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     const savedTheme = localStorage.getItem("theme");
     return (savedTheme === "light" || savedTheme === "dark") ? savedTheme : "dark";
+  });
+
+  // NOTE: 语言状态 (zh | en)
+  const [lang, setLang] = useState<"zh" | "en">(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const langInUrl = queryParams.get("lang");
+    if (langInUrl === "zh" || langInUrl === "en") {
+      return langInUrl;
+    }
+    const savedLang = localStorage.getItem("language");
+    if (savedLang === "zh" || savedLang === "en") {
+      return savedLang;
+    }
+    if (typeof navigator !== "undefined") {
+      const browserLang = navigator.language.toLowerCase();
+      return browserLang.startsWith("zh") ? "zh" : "en";
+    }
+    return "zh";
   });
 
   // NOTE: 检测 URL 区分是否在 iframe 内嵌入
@@ -68,16 +88,16 @@ const App: React.FC = () => {
     }
   }, [isPhysicalMobile, layoutMode]);
 
-  // Dynamic Site Text Data state
-  const [siteData, setSiteData] = useState<SiteData>(() => {
-    const savedData = localStorage.getItem("site_data");
+  // NOTE: 中文版站点文本数据状态
+  const [zhData, setZhData] = useState<SiteData>(() => {
+    const savedData = localStorage.getItem("site_data_zh") || localStorage.getItem("site_data");
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
         const oldTitles = ["每日智鼎 味来无限", "智鼎味来 智能炒菜机", "每日智鼎 味道无限", "智鼎味来 智能炒餐机"];
         if (parsed.hero && oldTitles.includes(parsed.hero.title)) {
           parsed.hero.title = "科技向膳 美味生活";
-          localStorage.setItem("site_data", JSON.stringify(parsed));
+          localStorage.setItem("site_data_zh", JSON.stringify(parsed));
         }
         const oldSubtitles = [
           "将先进的 AI 算法、物联网技术与中餐烹饪艺术深度融合。通过全自动智能炒菜机，为连锁餐饮、学校食堂、企业团餐等提供「高效、标准、健康」的智能烹饪解决方案。",
@@ -85,35 +105,52 @@ const App: React.FC = () => {
         ];
         if (parsed.hero && (!parsed.hero.subtitle || oldSubtitles.includes(parsed.hero.subtitle))) {
           parsed.hero.subtitle = "深圳智鼎味来科技有限公司（简称“智鼎味来”）是一家专注研究与推广中餐标准化多场景商业落地设计与应用，通过人工智能软硬件应用系统集成，助力传统中餐向“标准化、规模化、数智化”方向全面升级的服务商企业。";
-          localStorage.setItem("site_data", JSON.stringify(parsed));
+          localStorage.setItem("site_data_zh", JSON.stringify(parsed));
         }
 
         if (!parsed.about) {
           parsed.about = DEFAULT_SITE_DATA.about;
-          localStorage.setItem("site_data", JSON.stringify(parsed));
+          localStorage.setItem("site_data_zh", JSON.stringify(parsed));
         }
 
         return parsed;
       } catch (e) {
-        console.error("Failed to parse site_data", e);
+        console.error("Failed to parse site_data_zh", e);
       }
     }
     return DEFAULT_SITE_DATA;
   });
+
+  // NOTE: 英文版站点文本数据状态
+  const [enData, setEnData] = useState<SiteData>(() => {
+    const savedData = localStorage.getItem("site_data_en");
+    if (savedData) {
+      try {
+        return JSON.parse(savedData);
+      } catch (e) {
+        console.error("Failed to parse site_data_en", e);
+      }
+    }
+    return DEFAULT_SITE_DATA_EN;
+  });
+
+  // 根据当前激活的语言，导出派生的站点数据
+  const siteData = lang === "zh" ? zhData : enData;
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // NOTE: 挂载时异步拉取后端物理持久化的数据，并提供 fallback 缓存兜底机制
+  // NOTE: 挂载时异步拉取后端物理持久化的数据，并提供 fallback 缓存兜底机制（默认为中文站点更新数据）
   useEffect(() => {
     const fetchBackendData = async () => {
       try {
         const response = await fetch("http://localhost:9876/api/site-data");
         if (response.ok) {
           const data = await response.json();
-          setSiteData(data);
+          setZhData(data);
+          localStorage.setItem("site_data_zh", JSON.stringify(data));
           localStorage.setItem("site_data", JSON.stringify(data));
         }
       } catch (error) {
@@ -128,12 +165,17 @@ const App: React.FC = () => {
     if (!isEmbed) return;
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "site_data" && e.newValue) {
+      if (e.key === "site_data_zh" && e.newValue) {
         try {
-          const updated = JSON.parse(e.newValue);
-          setSiteData(updated);
+          setZhData(JSON.parse(e.newValue));
         } catch (err) {
-          console.error("Storage sync failed inside iframe", err);
+          console.error("Storage sync failed for zh inside iframe", err);
+        }
+      } else if (e.key === "site_data_en" && e.newValue) {
+        try {
+          setEnData(JSON.parse(e.newValue));
+        } catch (err) {
+          console.error("Storage sync failed for en inside iframe", err);
         }
       }
     };
@@ -146,9 +188,25 @@ const App: React.FC = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
+  const handleLangChange = (newLang: "zh" | "en") => {
+    setLang(newLang);
+    localStorage.setItem("language", newLang);
+    
+    // 悄悄更新 URL query 参数，保证刷新或链接分享时仍处于该语言
+    const url = new URL(window.location.href);
+    url.searchParams.set("lang", newLang);
+    window.history.replaceState({}, "", url.toString());
+  };
+
   const handleSaveSiteData = (newData: SiteData) => {
-    setSiteData(newData);
-    localStorage.setItem("site_data", JSON.stringify(newData));
+    if (lang === "zh") {
+      setZhData(newData);
+      localStorage.setItem("site_data_zh", JSON.stringify(newData));
+      localStorage.setItem("site_data", JSON.stringify(newData));
+    } else {
+      setEnData(newData);
+      localStorage.setItem("site_data_en", JSON.stringify(newData));
+    }
   };
 
   const handleLayoutModeChange = (newMode: "desktop" | "mobile") => {
@@ -169,10 +227,12 @@ const App: React.FC = () => {
           brandName={siteData.navbar.brandName} 
           theme={theme} 
           toggleTheme={toggleTheme} 
+          currentLang={lang}
+          onLangChange={handleLangChange}
         />
         <main style={{ marginTop: "0" }}>
           <Hero data={siteData.hero} about={siteData.about} />
-          <Showcase data={siteData.showcase} />
+          <Showcase data={siteData.showcase} lang={lang} />
           <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} />
         </main>
         <Footer data={siteData.footer} />
@@ -181,12 +241,12 @@ const App: React.FC = () => {
   }
 
   // 分支 B: 如果是物理大屏，且切换为移动端适配预览，则渲染仿真 iPhone
-  const iframeSrc = `${window.location.origin}${window.location.pathname}?embed=true&layoutMode=mobile`;
+  const iframeSrc = `${window.location.origin}${window.location.pathname}?embed=true&layoutMode=mobile&lang=${lang}`;
   const showPhoneSimulator = !isPhysicalMobile && layoutMode === "mobile";
 
   return (
     <>
-      <LayoutSwitcher activeMode={layoutMode} onChange={handleLayoutModeChange} />
+      <LayoutSwitcher activeMode={layoutMode} onChange={handleLayoutModeChange} lang={lang} />
       
       {showPhoneSimulator ? (
         <PhoneSimulator src={iframeSrc} />
@@ -197,10 +257,12 @@ const App: React.FC = () => {
             theme={theme} 
             toggleTheme={toggleTheme} 
             hasSwitcher={true}
+            currentLang={lang}
+            onLangChange={handleLangChange}
           />
           <main style={{ marginTop: "0" }}>
             <Hero data={siteData.hero} about={siteData.about} />
-            <Showcase data={siteData.showcase} />
+            <Showcase data={siteData.showcase} lang={lang} />
             <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} />
           </main>
           <Footer data={siteData.footer} />

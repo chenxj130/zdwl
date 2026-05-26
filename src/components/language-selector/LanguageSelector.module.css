@@ -1,0 +1,138 @@
+.selectorContainer {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-apple);
+}
+
+.selectorButton {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: all 0.3s var(--ease-apple);
+}
+
+.selectorButton:hover,
+.buttonActive {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-text-secondary);
+}
+
+:global([data-theme="light"]) .selectorButton:hover,
+:global([data-theme="light"]) .buttonActive {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.globeIcon {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.langLabel {
+  letter-spacing: -0.01em;
+}
+
+.arrowIcon {
+  font-size: 10px;
+  opacity: 0.6;
+  transition: transform 0.3s var(--ease-apple);
+  display: inline-block;
+}
+
+.arrowRotate {
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 120px;
+  background-color: rgba(22, 22, 23, 0.85); /* 默认暗色模式毛玻璃 */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 6px;
+  margin: 0;
+  list-style: none;
+  z-index: 1100;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.25s var(--ease-apple);
+}
+
+:global([data-theme="light"]) .dropdownMenu {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdownItem {
+  margin: 2px 0;
+}
+
+.itemButton {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 10px;
+  text-align: left;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-apple);
+}
+
+.itemButton:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-text);
+}
+
+:global([data-theme="light"]) .itemButton:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.activeItem {
+  color: var(--color-btn-bg);
+  font-weight: 600;
+}
+
+.checkIcon {
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* 小屏自适应微调 */
+@media (max-width: 580px) {
+  .langLabel {
+    display: none; /* 移动小屏折叠文字只保留地球仪图标 */
+  }
+  .selectorButton {
+    padding: 6px 8px;
+  }
+}

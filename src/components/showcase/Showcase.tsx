@@ -30,6 +30,7 @@ interface ShowcaseProps {
     title: string;
     products: ProductCase[];
   };
+  lang?: "zh" | "en";
 }
 
 /**
@@ -37,7 +38,7 @@ interface ShowcaseProps {
  * 支持由右向左的无缝匀速自动平移，支持鼠标悬停时暂停滚动并平滑放大，
  * 同时也支持点击左右箭头手动精准平滑切换产品页。
  */
-const Showcase: React.FC<ShowcaseProps> = ({ data }) => {
+const Showcase: React.FC<ShowcaseProps> = ({ data, lang = "zh" }) => {
   // 相对路径适配工具函数，用于解决 file:// 协议绝对路径寻址 Bug
   const resolveImagePath = (path: string) => {
     if (!path) return "";
@@ -449,12 +450,12 @@ const Showcase: React.FC<ShowcaseProps> = ({ data }) => {
                             e.stopPropagation();
                             handleOpenVideo(item.videoUrl!);
                           }}
-                          title="播放视频演示"
+                          title={lang === "zh" ? "播放视频演示" : "Play Video Demo"}
                         >
                           <svg className={styles.mediaIcon} viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <polygon points="5 3 19 12 5 21 5 3"></polygon>
                           </svg>
-                          <span>视频演示</span>
+                          <span>{lang === "zh" ? "视频演示" : "Video Demo"}</span>
                         </button>
                       )}
                       {item.audioUrl && (
@@ -465,7 +466,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ data }) => {
                             e.stopPropagation();
                             handleToggleAudio(item.audioUrl!);
                           }}
-                          title={playingAudioUrl === item.audioUrl ? "暂停语音介绍" : "播放语音介绍"}
+                          title={playingAudioUrl === item.audioUrl ? (lang === "zh" ? "暂停语音介绍" : "Pause Audio Guide") : (lang === "zh" ? "播放语音介绍" : "Play Audio Guide")}
                         >
                           {playingAudioUrl === item.audioUrl ? (
                             <>
@@ -475,7 +476,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ data }) => {
                                 <span className={styles.waveBar}></span>
                                 <span className={styles.waveBar}></span>
                               </div>
-                              <span>暂停介绍</span>
+                              <span>{lang === "zh" ? "暂停介绍" : "Pause Guide"}</span>
                             </>
                           ) : (
                             <>
@@ -483,7 +484,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ data }) => {
                                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                               </svg>
-                              <span>语音介绍</span>
+                              <span>{lang === "zh" ? "语音介绍" : "Audio Guide"}</span>
                             </>
                           )}
                         </button>
@@ -557,7 +558,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ data }) => {
             <button 
               className={styles.closeBtn} 
               onClick={handleCloseVideo}
-              aria-label="关闭视频"
+              aria-label={lang === "zh" ? "关闭视频" : "Close Video"}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>

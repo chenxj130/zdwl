@@ -1,0 +1,282 @@
+{
+  "navbar": {
+    "brandName": "Zhiding Future"
+  },
+  "about": {
+    "title": "Company Profile",
+    "content": "Shenzhen Zhiding Weilai Technology Co., Ltd. (referred to as \"Zhiding Future\") is a service provider enterprise focusing on the research, promotion, and multi-scenario commercial application design of Chinese culinary standardization. Through the integration of artificial intelligence hardware and software application systems, it helps traditional Chinese catering upgrade comprehensively towards \"standardization, scalability, and digitalization.\""
+  },
+  "hero": {
+    "eyebrow": "Dietary Revolution in the AI Era",
+    "title": "Tech for Cuisine, Delicious Life",
+    "subtitle": "Liberating productivity from tedious Chinese cooking through innovative technology to achieve effortless cooking. We adhere to our original aspiration of \"Tech for Cuisine, Delicious Life\" so that Chinese culinary culture can be inherited and shared with the world, offering safe and delicious Chinese flavors!"
+  },
+  "showcase": {
+    "eyebrow": "Product Series",
+    "title": "Exceptional Performance, Powerful Output",
+    "products": [
+      {
+        "id": 1,
+        "model": "ZDWL-300D",
+        "title": "Stir-fry Induction Commercial Smart Cooking Robot",
+        "description": "Specialized in high-temperature quick stir-frying for individual orders. Perfectly suited for dinner courses, specialty stir-fry, and rice-topping fast food chains. Featuring a compact structural design and high-sensitivity electromagnetic induction technology, it realizes precise temperature control to recreate master-level fire curves. Supports one-click cloud digital recipe download and deployment, ensuring every stir-fry restores traditional artisan flavors.",
+        "stats": [
+          {
+            "label": "Average Cooking Time per Pot",
+            "highlight": "3",
+            "text": " mins"
+          },
+          {
+            "label": "Rated Power",
+            "highlight": "8",
+            "text": " kW"
+          },
+          {
+            "label": "Input Voltage",
+            "highlight": "380",
+            "text": " V / 50Hz"
+          },
+          {
+            "label": "Output Capacity per Pot",
+            "highlight": "0.35-1",
+            "text": " kg (Optimal 0.5kg)"
+          },
+          {
+            "label": "Automatic Seasoning System",
+            "highlight": "4-way primary/secondary + 7-way liquid seasoning",
+            "text": " (including starch, saltwater, and combined sauces) auto-dispensation",
+            "fullWidth": true
+          },
+          {
+            "label": "Machine Dimensions",
+            "highlight": "W760 × D740 × H1450",
+            "text": " mm",
+            "fullWidth": true
+          }
+        ],
+        "image": ""
+      },
+      {
+        "id": 2,
+        "model": "ZDWL-350D",
+        "title": "Rolling Drum Induction Commercial Smart Cooking Robot",
+        "description": "Specialized in flexible batch catering, compatible with stir-frying and multi-order combinations in a single run. The prime choice for buffet fast food and medium-to-small cafeterias. Featuring a medium-capacity drum design and a fully automatic robotic arm dish-pouring mechanism. Equipped with precise temperature control and precise solid/liquid seasoning auto-dispensation, it easily masters complex sautéing and stewing processes across various cuisines.",
+        "stats": [
+          {
+            "label": "Average Cooking Time per Pot",
+            "highlight": "5",
+            "text": " mins"
+          },
+          {
+            "label": "Rated Power",
+            "highlight": "15",
+            "text": " kW"
+          },
+          {
+            "label": "Input Voltage",
+            "highlight": "380",
+            "text": " V / 50Hz"
+          },
+          {
+            "label": "Output Capacity per Pot",
+            "highlight": "0.5-4",
+            "text": " kg (Optimal 2kg)"
+          },
+          {
+            "label": "Automatic Seasoning System",
+            "highlight": "4-way main/aux + 4-way powder + 9-way liquid seasoning",
+            "text": " (including starch and thick sauces) auto-dispensation",
+            "fullWidth": true
+          },
+          {
+            "label": "Machine Dimensions",
+            "highlight": "W760 × D940 × H1650",
+            "text": " mm",
+            "fullWidth": true
+          }
+        ],
+        "image": ""
+      },
+      {
+        "id": 3,
+        "model": "ZDWL-600D",
+        "title": "Large Scale Collective Induction Commercial Smart Cooking Robot",
+        "description": "A powerhouse for large-scale cafeteria central production, customized for corporate canteens, universities, hospitals, and central kitchens. Features a 360-degree forward and reverse tilting drum paired with multi-intensity active mixing, ensuring uniform heating for large batches of ingredients, enabling effortless high-efficiency, high-volume catering.",
+        "stats": [
+          {
+            "label": "Average Cooking Time per Pot",
+            "highlight": "10",
+            "text": " mins"
+          },
+          {
+            "label": "Rated Power",
+            "highlight": "30",
+            "text": " kW"
+          },
+          {
+            "label": "Input Voltage",
+            "highlight": "380",
+            "text": " V / 50Hz"
+          },
+          {
+            "label": "Output Capacity per Pot",
+            "highlight": "10-30",
+            "text": " kg"
+          },
+          {
+            "label": "Machine Dimensions",
+            "highlight": "W1350 × D1250 × H1400",
+            "text": " mm",
+            "fullWidth": true
+          }
+        ],
+        "image": ""
+      }
+    ]
+  },
+  "advantages": {
+    "sectionEyebrow": "Core Technology & Advantages",
+    "sectionTitle": "Unveiling a New Era of Smart Cooking",
+    "techTitle": "Tech for Cuisine",
+    "techDesc": "Driven by precise electromagnetic induction temperature control and electronic recipes, achieving 100% precise control over cooking heat, perfectly replicating master-level tossing, stir-frying, and temperature regulation.",
+    "techImage": "",
+    "techImageAlt": "",
+    "standardTitle": "Chinese Culinary Standardization",
+    "standardDesc": "Synchronize massive premium recipes from the cloud with a single click to terminals, perfectly solving traditional pain points such as taste inconsistency, high chef labor costs, and expansion barriers.",
+    "syncTitle": "Multi-Terminal Intelligence Collaboration",
+    "syncDesc": "Based on the AIoT cloud platform, enabling online monitoring of equipment status, remote recipe upgrades, and real-time cooking parameters calibration. Easily manage large-scale catering chains."
+  },
+  "founder": {
+    "name": "Hua Cheng",
+    "title": "Pioneer in Multi-Scenario Commercial Application of Chinese Culinary Standardization",
+    "bio": "For 16 years, dedicated to researching and promoting the commercial landing of Chinese food standardization. Exploring the integration of technology and cuisine to help traditional Chinese catering comprehensively upgrade toward 'standardization, digitalization, and intelligence.'",
+    "image": "",
+    "imageAlt": "",
+    "badgeLine": "16+ YEARS",
+    "badgeLabel": "AI COOKING EXPLORATION"
+  },
+  "footer": {
+    "disclaimer": "All smart cooking hardware structures, IoT cloud scheduling systems, and cooking temperature control curve algorithms on this website are owned by the equipment manufacturers. Part of the 3D product renders are generated by neural networks for functional illustration. Zhiding Future is dedicated to blending advanced AI technology with traditional cooking art to unlock the catering intelligence revolution.",
+    "address": "Factory Building 102, No. 6 Junxin Industrial Road, Junzibu Community, Guanlan Street, Longhua District, Shenzhen, China",
+    "phone": "+86 15507556167",
+    "copyright": "Copyright © 2026 Shenzhen Zhiding Weilai Technology Co., Ltd. All Rights Reserved.",
+    "bookingUrl": "https://wj.qq.com/s2/26802076/66f4/",
+    "columns": [
+      {
+        "id": "products",
+        "title": "Product Series",
+        "titleLink": "#showcase",
+        "links": [
+          {
+            "text": "ZDWL-300D Stir-fry Type",
+            "href": "#showcase"
+          },
+          {
+            "text": "ZDWL-350D Medium Batch Type",
+            "href": "#showcase"
+          },
+          {
+            "text": "ZDWL-600D Collective Canteen Type",
+            "href": "#showcase"
+          },
+          {
+            "text": "Commercial Parts & Pots",
+            "href": "#"
+          }
+        ]
+      },
+      {
+        "id": "solutions",
+        "title": "Core Solutions",
+        "titleLink": "#advantages",
+        "links": [
+          {
+            "text": "Regular Dinner & Fast Food Standardization",
+            "href": "#advantages"
+          },
+          {
+            "text": "Smart Canteen for Corporate & Campus",
+            "href": "#advantages"
+          },
+          {
+            "text": "Large Scale Central Kitchen Factories",
+            "href": "#advantages"
+          },
+          {
+            "text": "Electronic Recipe Trade & Multi-End Collaboration",
+            "href": "#advantages"
+          }
+        ]
+      },
+      {
+        "id": "values",
+        "title": "Tech for Cuisine",
+        "titleLink": "#bento-grid",
+        "links": [
+          {
+            "text": "Smart Cooking Machine Series",
+            "href": "#bento-grid"
+          },
+          {
+            "text": "Smart Settlement & Front-House Operations",
+            "href": "#"
+          },
+          {
+            "text": "Cost Reduction, Efficiency & Green Emission",
+            "href": "#"
+          },
+          {
+            "text": "Food Safety, Health & Deliciousness",
+            "href": "#"
+          }
+        ]
+      },
+      {
+        "id": "about",
+        "title": "About Us",
+        "titleLink": "#company-profile",
+        "links": [
+          {
+            "text": "Company Profile",
+            "href": "#company-profile"
+          },
+          {
+            "text": "Founder: Hua Cheng",
+            "href": "#founder"
+          },
+          {
+            "text": "Enterprise Honors & Qualifications",
+            "href": "#"
+          },
+          {
+            "text": "Office Address",
+            "href": "#footer"
+          }
+        ]
+      },
+      {
+        "id": "support",
+        "title": "Service & Support",
+        "titleLink": "#footer",
+        "links": [
+          {
+            "text": "User Manuals & Instructions",
+            "href": "#"
+          },
+          {
+            "text": "Frequently Asked Questions",
+            "href": "#"
+          },
+          {
+            "text": "After-Sales Maintenance Tickets",
+            "href": "#"
+          },
+          {
+            "text": "Business Cooperation Hotline",
+            "href": "#footer"
+          }
+        ]
+      }
+    ]
+  }
+}

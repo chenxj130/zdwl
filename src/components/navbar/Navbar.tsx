@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./Navbar.module.css";
 import ThemeToggle from "../theme-toggle/ThemeToggle";
+import LanguageSelector from "../language-selector/LanguageSelector";
 
 interface NavbarProps {
   brandName?: string;
   theme: "light" | "dark";
   toggleTheme: () => void;
   hasSwitcher?: boolean;
+  currentLang: "zh" | "en";
+  onLangChange: (lang: "zh" | "en") => void;
 }
 
 /**
@@ -15,7 +18,7 @@ interface NavbarProps {
  */
 const SECTION_IDS = ["hero", "company-profile", "showcase", "advantages", "footer"];
 
-const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, hasSwitcher }) => {
+const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, hasSwitcher, currentLang, onLangChange }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("hero");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -252,6 +255,22 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, hasSwitcher }) => {
     };
   }, []);
 
+  const navLinks = currentLang === "zh" ? [
+    { id: "hero", label: "首页", activeMatch: "hero" },
+    { id: "company-profile", label: "公司简介", activeMatch: "company-profile" },
+    { id: "showcase", label: "产品系列", activeMatch: "showcase" },
+    { id: "advantages", label: "核心优势", activeMatch: "advantages" },
+    { id: "founder", label: "创始人", activeMatch: "advantages" },
+    { id: "footer", label: "联系我们", activeMatch: "footer" },
+  ] : [
+    { id: "hero", label: "Home", activeMatch: "hero" },
+    { id: "company-profile", label: "About", activeMatch: "company-profile" },
+    { id: "showcase", label: "Products", activeMatch: "showcase" },
+    { id: "advantages", label: "Advantages", activeMatch: "advantages" },
+    { id: "founder", label: "Founder", activeMatch: "advantages" },
+    { id: "footer", label: "Contact Us", activeMatch: "footer" },
+  ];
+
   return (
     <nav className={`${styles.navContainer} ${hasSwitcher ? styles.hasSwitcher : ""}`}>
       <div className={styles.navContent}>
@@ -260,8 +279,12 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, hasSwitcher }) => {
           <div className={styles.scrollingLogoContainer}>
             <div className={styles.scrollingTextWrapper}>
               <div className={styles.scrollingText}>
-                <span className={styles.scrollSpan}>每日智鼎 味来无限</span>
-                <span className={styles.scrollSpan}>每日智鼎 味来无限</span>
+                <span className={styles.scrollSpan}>
+                  {currentLang === "zh" ? "每日智鼎 味来无限" : "Zhiding Future, Infinite Taste"}
+                </span>
+                <span className={styles.scrollSpan}>
+                  {currentLang === "zh" ? "每日智鼎 味来无限" : "Zhiding Future, Infinite Taste"}
+                </span>
               </div>
             </div>
             <canvas ref={canvasRef} className={styles.plasmaCanvas} />
@@ -270,14 +293,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, hasSwitcher }) => {
 
         {/* Desktop Links — 活跃 section 自动高亮 */}
         <ul className={styles.linksList}>
-          {[
-            { id: "hero", label: "首页", activeMatch: "hero" },
-            { id: "company-profile", label: "公司简介", activeMatch: "company-profile" },
-            { id: "showcase", label: "产品系列", activeMatch: "showcase" },
-            { id: "advantages", label: "核心优势", activeMatch: "advantages" },
-            { id: "founder", label: "创始人", activeMatch: "advantages" },
-            { id: "footer", label: "联系我们", activeMatch: "footer" },
-          ].map((link) => (
+          {navLinks.map((link) => (
             <li key={link.id} className={styles.linkItem}>
               <a
                 href={`#${link.id}`}
@@ -289,8 +305,9 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, hasSwitcher }) => {
           ))}
         </ul>
 
-        {/* Right actions (Theme Toggle + Hamburger) */}
+        {/* Right actions (Theme Toggle + Language Selector + Hamburger) */}
         <div className={styles.actions}>
+          <LanguageSelector currentLang={currentLang} onLangChange={onLangChange} />
           <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
           
           <button 
@@ -317,14 +334,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, hasSwitcher }) => {
       {/* Mobile Menu Drawer — 活跃 section 自动高亮 */}
       <div className={`${styles.mobileDrawer} ${isMenuOpen ? styles.mobileDrawerOpen : ""}`}>
         <ul className={styles.mobileLinks}>
-          {[
-            { id: "hero", label: "首页", activeMatch: "hero" },
-            { id: "company-profile", label: "公司简介", activeMatch: "company-profile" },
-            { id: "showcase", label: "产品系列", activeMatch: "showcase" },
-            { id: "advantages", label: "核心优势", activeMatch: "advantages" },
-            { id: "founder", label: "创始人", activeMatch: "advantages" },
-            { id: "footer", label: "联系我们", activeMatch: "footer" },
-          ].map((link) => (
+          {navLinks.map((link) => (
             <li key={link.id} className={styles.mobileLinkItem}>
               <a
                 href={`#${link.id}`}

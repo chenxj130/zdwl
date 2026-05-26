@@ -4,6 +4,7 @@ import styles from "./LayoutSwitcher.module.css";
 interface LayoutSwitcherProps {
   activeMode: "desktop" | "mobile";
   onChange: (mode: "desktop" | "mobile") => void;
+  lang: "zh" | "en";
 }
 
 /**
@@ -12,7 +13,7 @@ interface LayoutSwitcherProps {
  * @param props 组件属性
  * @returns React 组件
  */
-const LayoutSwitcher: React.FC<LayoutSwitcherProps> = ({ activeMode, onChange }) => {
+const LayoutSwitcher: React.FC<LayoutSwitcherProps> = ({ activeMode, onChange, lang }) => {
   // NOTE: 检测并保存当前系统自动识别到的浏览器适配类型
   const [detectedMode, setDetectedMode] = useState<"desktop" | "mobile">("desktop");
 
@@ -26,14 +27,30 @@ const LayoutSwitcher: React.FC<LayoutSwitcherProps> = ({ activeMode, onChange })
     }
   }, []);
 
+  const getMatchedText = () => {
+    if (lang === "zh") {
+      return `已自动匹配：${detectedMode === "mobile" ? "移动端" : "电脑端"}浏览器`;
+    }
+    return `Auto-matched: ${detectedMode === "mobile" ? "Mobile" : "Desktop"} browser`;
+  };
+
+  const getMatchedTitle = () => {
+    if (lang === "zh") {
+      return `已根据您当前打开的设备类型自动匹配为${detectedMode === "mobile" ? "移动端" : "电脑端"}布局`;
+    }
+    return `Auto-matched to ${detectedMode === "mobile" ? "Mobile" : "Desktop"} layout based on your current device`;
+  };
+
   return (
     <div className={styles.switcherContainer} id="layout-switcher">
       <div className={styles.switcherContent}>
         <div className={styles.titleWrapper}>
-          <span className={styles.switcherTitle}>智能布局预览：</span>
-          <span className={styles.detectBadge} title={`已根据您当前打开的设备类型自动匹配为${detectedMode === "mobile" ? "移动端" : "电脑端"}布局`}>
+          <span className={styles.switcherTitle}>
+            {lang === "zh" ? "智能布局预览：" : "Layout Preview: "}
+          </span>
+          <span className={styles.detectBadge} title={getMatchedTitle()}>
             <span className={styles.pulseDot}></span>
-            已自动匹配：{detectedMode === "mobile" ? "移动端" : "电脑端"}浏览器
+            {getMatchedText()}
           </span>
         </div>
         <div className={styles.switcherLinks}>
@@ -47,17 +64,17 @@ const LayoutSwitcher: React.FC<LayoutSwitcherProps> = ({ activeMode, onChange })
             type="button"
             onClick={() => onChange("desktop")}
             className={`${styles.switcherLink} ${activeMode === "desktop" ? styles.activeLink : ""}`}
-            title="切换至电脑端大屏自适应布局"
+            title={lang === "zh" ? "切换至电脑端大屏自适应布局" : "Switch to desktop responsive layout"}
           >
-            <span className={styles.icon}>💻</span> 电脑端适配
+            <span className={styles.icon}>💻</span> {lang === "zh" ? "电脑端适配" : "Desktop Mode"}
           </button>
           <button
             type="button"
             onClick={() => onChange("mobile")}
             className={`${styles.switcherLink} ${activeMode === "mobile" ? styles.activeLink : ""}`}
-            title="切换至 1:1 移动端真机排版预览"
+            title={lang === "zh" ? "切换至 1:1 移动端真机排版预览" : "Switch to 1:1 mobile phone simulator"}
           >
-            <span className={styles.icon}>📱</span> 移动端适配
+            <span className={styles.icon}>📱</span> {lang === "zh" ? "移动端适配" : "Mobile Mode"}
           </button>
         </div>
       </div>
