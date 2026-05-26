@@ -441,8 +441,8 @@
     width: 310px !important;
     height: auto !important; /* 自适应内容高度，防止文字超出截断 */
     min-height: 480px !important;
-    flex-direction: column-reverse !important;
-    justify-content: flex-end !important; /* 将内容向物理顶部对齐，多余空间留到底部 */
+    display: grid !important;
+    grid-template-rows: auto auto !important; /* 第一行图片，第二行文字内容 */
     transform: none !important;
     opacity: 1 !important;
     margin-right: 16px !important;
@@ -459,15 +459,17 @@
   .cardContent {
     padding: 16px 20px !important;
     width: 100% !important;
-    flex: none !important;
+    grid-row: 2 !important; /* 强制位于第二行（底部） */
     box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
     justify-content: flex-start !important;
   }
   
   .cardImageWrapper {
-    height: 180px !important; /* 固定高度，避免弹性拉伸导致的整体高度死锁截断 */
+    height: 180px !important; /* 固定高度，避免弹性拉伸 */
     width: 100% !important;
-    flex: none !important; /* 清除伸缩，使卡片高度完全由图片高度 + 文本实际高度撑开 */
+    grid-row: 1 !important; /* 强制位于第一行（顶部） */
     min-width: 0 !important;
     border-left: none !important;
     border-bottom: 1px solid var(--color-border-card) !important;
@@ -587,6 +589,27 @@
     width: 18px !important; /* 激活时水平拉伸为胶囊形状 */
     background-color: var(--color-link) !important;
     opacity: 1 !important;
+  }
+
+  /* 移动端英文版特异覆盖规则，缩减间距与字号，防止溢出 */
+  .showcaseSection[data-lang="en"] .statsGrid {
+    gap: 4px 8px !important;
+  }
+  
+  .showcaseSection[data-lang="en"] .statLabel {
+    font-size: 9px !important;
+  }
+  
+  .showcaseSection[data-lang="en"] .statText {
+    font-size: 10px !important;
+  }
+  
+  .showcaseSection[data-lang="en"] .caseDesc {
+    margin-bottom: 6px !important;
+  }
+
+  .showcaseSection[data-lang="en"] .caseTitle {
+    font-size: 15px !important;
   }
 }
 
