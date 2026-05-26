@@ -28,13 +28,14 @@ interface BentoGridProps {
       syncDesc: string;
     };
   };
+  lang?: "zh" | "en";
 }
 
 /**
  * 核心优势 + 创始人合并为单个全屏 section
  * NOTE: 导航栏「核心优势」锚点指向整个 section，「创始人」锚点指向内部的创始人卡片
  */
-const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
+const BentoGrid: React.FC<BentoGridProps> = ({ data, lang = "zh" }) => {
   // 相对路径适配工具函数，用于解决 file:// 协议绝对路径寻址 Bug
   const resolveImagePath = (path: string) => {
     if (!path) return "";
@@ -51,10 +52,10 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
     <section id="advantages" className={styles.fullPageSection}>
       <div className={styles.sectionHeader}>
         <span className={styles.eyebrow}>
-          <PlasmaText glowColor="purple">{data.advantages.sectionEyebrow || "核心技术与优势"}</PlasmaText>
+          <PlasmaText glowColor="purple">{data.advantages.sectionEyebrow || (lang === "zh" ? "核心技术与优势" : "Core Tech & Advantages")}</PlasmaText>
         </span>
         <h2 className={styles.title}>
-          <PlasmaText glowColor="red">{data.advantages.sectionTitle || "开启智慧烹饪新纪元"}</PlasmaText>
+          <PlasmaText glowColor="red">{data.advantages.sectionTitle || (lang === "zh" ? "开启智慧烹饪新纪元" : "Unveiling a New Era of Smart Cooking")}</PlasmaText>
         </h2>
       </div>
 
@@ -64,11 +65,13 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
           className={`${styles.card} ${styles.span8} ${styles.imageCard} reveal-on-scroll`}
           style={{ backgroundImage: `url(${resolveImagePath(data.advantages.techImage) || heroImg})` }}
           role="img"
-          aria-label={data.advantages.techImageAlt || "智鼎味来智能烹饪核心技术演示图"}
+          aria-label={data.advantages.techImageAlt || (lang === "zh" ? "智鼎味来智能烹饪核心技术演示图" : "Zhiding Future Smart Cooking Core Tech Demo")}
         >
           <div className={styles.imageOverlay}></div>
           <div className={styles.cardText}>
-            <span className={styles.cardCategory}>核心科技</span>
+            <span className={styles.cardCategory}>
+              {lang === "zh" ? "核心科技" : "Core Tech"}
+            </span>
             <h3 className={styles.cardTitle}>{data.advantages.techTitle}</h3>
             <p className={styles.cardDesc}>
               {data.advantages.techDesc}
@@ -76,7 +79,7 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
           </div>
           <div className={styles.cardAction}>
             <a href="#showcase" className="secondaryBtn" style={{ color: "#2997ff" }}>
-              探索智能硬件 &rarr;
+              {lang === "zh" ? "探索智能硬件" : "Explore Smart Hardware"} &rarr;
             </a>
           </div>
         </div>
@@ -91,12 +94,14 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
             className={styles.founderImage} 
             style={{ backgroundImage: `url(${resolveImagePath(data.founder.image) || founderImg})` }}
             role="img"
-            aria-label={data.founder.imageAlt || "智鼎味来创始人程华肖像照"}
+            aria-label={data.founder.imageAlt || (lang === "zh" ? "智鼎味来创始人程华肖像照" : "Hua Cheng - Founder of Zhiding Future")}
           ></div>
           <div className={styles.founderOverlay}></div>
 
           <div className={styles.founderContent}>
-            <span className={styles.cardCategory} style={{ color: "var(--color-link)" }}>创始人</span>
+            <span className={styles.cardCategory} style={{ color: "var(--color-link)" }}>
+              {lang === "zh" ? "创始人" : "Founder"}
+            </span>
             <h3 className={styles.cardTitle} style={{ color: "#ffffff", marginBottom: "4px" }}>{data.founder.name}</h3>
             <span className={styles.founderSubtitle} style={{ color: "var(--color-link)" }}>{data.founder.title}</span>
             <p className={styles.cardDesc} style={{ color: "rgba(255, 255, 255, 0.8)", marginTop: "16px" }}>
@@ -114,7 +119,9 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
         {/* Card 3: Chinese Food Standardization (Small, Left) */}
         <div className={`${styles.card} ${styles.span4} reveal-on-scroll`}>
           <div className={styles.cardText}>
-            <span className={styles.cardCategory} style={{ color: "var(--color-text-secondary)" }}>解决痛点</span>
+            <span className={styles.cardCategory} style={{ color: "var(--color-text-secondary)" }}>
+              {lang === "zh" ? "解决痛点" : "Pain Points"}
+            </span>
             <h3 className={styles.cardTitle} style={{ color: "var(--color-text)" }}>{data.advantages.standardTitle}</h3>
             <p className={styles.cardDesc} style={{ color: "var(--color-text-secondary)" }}>
               {data.advantages.standardDesc}
@@ -123,18 +130,20 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
           
           {/* Animated CSS Temperature Curve Visual */}
           <div className={styles.chartContainer}>
-            <div className={styles.chartBar} style={{ height: "30%", animationDelay: "0.1s" }} data-label="预热"></div>
-            <div className={styles.chartBar} style={{ height: "65%", animationDelay: "0.3s" }} data-label="下料"></div>
-            <div className={styles.chartBar} style={{ height: "95%", animationDelay: "0.5s" }} data-label="爆炒"></div>
-            <div className={styles.chartBar} style={{ height: "55%", animationDelay: "0.2s" }} data-label="收汁"></div>
-            <div className={styles.chartBar} style={{ height: "40%", animationDelay: "0.4s" }} data-label="保温"></div>
+            <div className={styles.chartBar} style={{ height: "30%", animationDelay: "0.1s" }} data-label={lang === "zh" ? "预热" : "Preheat"}></div>
+            <div className={styles.chartBar} style={{ height: "65%", animationDelay: "0.3s" }} data-label={lang === "zh" ? "下料" : "Add Food"}></div>
+            <div className={styles.chartBar} style={{ height: "95%", animationDelay: "0.5s" }} data-label={lang === "zh" ? "爆炒" : "Stir-fry"}></div>
+            <div className={styles.chartBar} style={{ height: "55%", animationDelay: "0.2s" }} data-label={lang === "zh" ? "收汁" : "Reduce"}></div>
+            <div className={styles.chartBar} style={{ height: "40%", animationDelay: "0.4s" }} data-label={lang === "zh" ? "保温" : "Warm"}></div>
           </div>
         </div>
 
         {/* Card 4: Multi-Device Sync (Large, Right) */}
         <div className={`${styles.card} ${styles.span8} reveal-on-scroll`}>
           <div className={styles.cardText}>
-            <span className={styles.cardCategory} style={{ color: "var(--color-text-secondary)" }}>物联控制</span>
+            <span className={styles.cardCategory} style={{ color: "var(--color-text-secondary)" }}>
+              {lang === "zh" ? "物联控制" : "IoT Control"}
+            </span>
             <h3 className={styles.cardTitle} style={{ color: "var(--color-text)" }}>{data.advantages.syncTitle}</h3>
             <p className={styles.cardDesc} style={{ color: "var(--color-text-secondary)" }}>
               {data.advantages.syncDesc}
@@ -150,22 +159,22 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data }) => {
             </div>
             <div>
               <span className={styles.terminalLine}>
-                <span className={styles.terminalCommand}>$</span> zdwl-sync deploy --recipe "小炒肉_v2.1"
+                <span className={styles.terminalCommand}>$</span> zdwl-sync deploy --recipe {lang === "zh" ? "\"小炒肉_v2.1\"" : "\"Sautéed_Pork_v2.1\""}
               </span>
             </div>
             <div>
               <span className={styles.terminalLine} style={{ color: "#abb2bf" }}>
-                &gt; 同步菜谱数据库与大师烹饪火候曲线...
+                &gt; {lang === "zh" ? "同步菜谱数据库与大师烹饪火候曲线..." : "Syncing recipe database & master fire curve..."}
               </span>
             </div>
             <div>
               <span className={styles.terminalLine} style={{ color: "#e5c07b" }}>
-                &gt; 锅体电磁预热至 185°C (实时监测温度: 185.2°C)
+                &gt; {lang === "zh" ? "锅体电磁预热至 185°C (实时监测温度: 185.2°C)" : "Pot induction preheating to 185°C (Real-time: 185.2°C)"}
               </span>
             </div>
             <div>
               <span className={styles.terminalLine} style={{ color: "#98c379" }}>
-                ✔ 菜谱部署成功：设备 #03 烹饪就绪
+                {lang === "zh" ? "✔ 菜谱部署成功：设备 #03 烹饪就绪" : "✔ Recipe deployed successfully: Device #03 ready"}
               </span>
             </div>
           </div>

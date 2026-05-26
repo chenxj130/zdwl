@@ -13,21 +13,26 @@ interface HeroProps {
     title: string;
     content: string;
   };
+  lang?: "zh" | "en";
 }
 
-const Hero: React.FC<HeroProps> = ({ data, about }) => {
+const Hero: React.FC<HeroProps> = ({ data, about, lang = "zh" }) => {
   const renderSubtitle = (text: string) => {
     if (!text) return null;
     const cleanText = text.trim();
-    // 切分目标高亮词汇
-    const parts = cleanText.split(/(创新科技|解放生产力实现轻松烹饪|留远传承|中国味道)/g);
+    
+    // NOTE: 根据当前激活语言，匹配相应的高亮关键字正则
+    const regex = lang === "zh"
+      ? /(创新科技|解放生产力实现轻松烹饪|留远传承|中国味道)/g
+      : /(innovative technology|liberating productivity|Chinese culinary culture|delicious Chinese flavors)/gi;
+
+    const parts = cleanText.split(regex);
     return parts.map((part, idx) => {
-      if (
-        part === "创新科技" ||
-        part === "解放生产力实现轻松烹饪" ||
-        part === "留远传承" ||
-        part === "中国味道"
-      ) {
+      const isHighlight = lang === "zh"
+        ? (part === "创新科技" || part === "解放生产力实现轻松烹饪" || part === "留远传承" || part === "中国味道")
+        : /innovative technology|liberating productivity|Chinese culinary culture|delicious Chinese flavors/i.test(part);
+
+      if (isHighlight) {
         return (
           <span key={idx} className={styles.highlightText}>
             {part}
@@ -51,10 +56,14 @@ const Hero: React.FC<HeroProps> = ({ data, about }) => {
         
         <div className={styles.ctas}>
           <a href="#showcase">
-            <button className={styles.primaryBtn}>了解产品系列</button>
+            <button className={styles.primaryBtn}>
+              {lang === "zh" ? "了解产品系列" : "Explore Products"}
+            </button>
           </a>
           <a href="#footer">
-            <button className={styles.primaryBtn}>咨询定制方案</button>
+            <button className={styles.primaryBtn}>
+              {lang === "zh" ? "咨询定制方案" : "Contact Sales"}
+            </button>
           </a>
         </div>
       </div>

@@ -22,6 +22,7 @@ interface FooterProps {
     bookingUrl?: string;
     columns?: FooterColumn[];
   };
+  lang?: "zh" | "en";
 }
 
 const DEFAULT_COLUMNS: FooterColumn[] = [
@@ -82,7 +83,7 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
   }
 ];
 
-const Footer: React.FC<FooterProps> = ({ data }) => {
+const Footer: React.FC<FooterProps> = ({ data, lang = "zh" }) => {
   const [openColumns, setOpenColumns] = useState<Record<string, boolean>>({});
   const [bookingName, setBookingName] = useState("");
   const [bookingPhone, setBookingPhone] = useState("");
@@ -131,7 +132,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
             <svg viewBox="0 0 150 50" width="150" height="50" style={{ display: "block" }}>
               <g transform="translate(0, 6)" fill="var(--color-text)">
                 <text x="75" y="22" fontFamily="var(--font-apple)" fontWeight="700" fontSize="16" letterSpacing="0.05em" fill="currentColor" textAnchor="middle">
-                  智鼎味来
+                  {lang === "zh" ? "智鼎味来" : "Zhiding Future"}
                 </text>
               </g>
               {/* Underline English slogan with red bars on both sides */}
@@ -143,7 +144,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
             </svg>
           </div>
           <p style={{ marginBottom: "12px", lineHeight: "1.6" }}>
-            {data?.disclaimer || "本网站的所有智能烹饪硬件结构、物联网云端调度系统及烹饪温控曲线算法均由设备生产制造厂家所有。部分 3D 产品渲染由神经网络自主训练生成，用于功能示意展示。智鼎味来致力于将先进的 AI 科技与传统烹饪艺术深度融汇，开启餐饮智能化革命。"}
+            {data?.disclaimer || (lang === "zh" ? "本网站的所有智能烹饪硬件结构、物联网云端调度系统及烹饪温控曲线算法均由设备生产制造厂家所有。部分 3D 产品渲染由神经网络自主训练生成，用于功能示意展示。智鼎味来致力于将先进的 AI 科技与传统烹饪艺术深度融汇，开启餐饮智能化革命。" : "All smart cooking hardware, IoT cloud dispatching, and fire curve algorithms belong to the manufacturers. 3D renders are neural net trained for visual representation. Zhiding Future blends AI technology with traditional culinary art to spark catering digitization.")}
           </p>
           <p style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "6px 16px", color: "var(--color-text)", fontWeight: "500", lineHeight: "1.6" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
@@ -151,27 +152,27 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              公司地址：{data?.address || "深圳市龙华区观澜街道君子布社区君新工业路6号厂房102"}
+              {lang === "zh" ? "公司地址：" : "Address: "}{data?.address || (lang === "zh" ? "深圳市龙华区观澜街道君子布社区君新工业路6号厂房102" : "Factory 102, No. 6 Junxin Industrial Road, Guanlan Street, Longhua District, Shenzhen, China")}
             </span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--color-accent-red)" }}>
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
-              商务合作：{data?.phone || "15507556167（微信同号）"}
+              {lang === "zh" ? "商务合作：" : "Contact: "}{data?.phone || "15507556167"}
             </span>
           </p>
         </div>
 
         {/* 在线预约表单模块 */}
         <div className={styles.bookingFormWrapper}>
-          <h4 className={styles.bookingTitle}>预约设备体验</h4>
+          <h4 className={styles.bookingTitle}>{lang === "zh" ? "预约设备体验" : "Book a Live Demo"}</h4>
           <form onSubmit={handleBookingSubmit} className={styles.bookingForm}>
             <div className={styles.formRow}>
               <div className={styles.formField}>
-                <label className={styles.formLabel}>称呼 <span className={styles.required}>*</span></label>
+                <label className={styles.formLabel}>{lang === "zh" ? "称呼" : "Name"} <span className={styles.required}>*</span></label>
                 <input 
                   type="text" 
-                  placeholder="请输入您的称呼" 
+                  placeholder={lang === "zh" ? "请输入您的称呼" : "Your name"} 
                   required 
                   value={bookingName}
                   onChange={(e) => setBookingName(e.target.value)}
@@ -179,10 +180,10 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
                 />
               </div>
               <div className={styles.formField}>
-                <label className={styles.formLabel}>电话 <span className={styles.required}>*</span></label>
+                <label className={styles.formLabel}>{lang === "zh" ? "电话" : "Phone"} <span className={styles.required}>*</span></label>
                 <input 
                   type="tel" 
-                  placeholder="请输入手机号" 
+                  placeholder={lang === "zh" ? "请输入手机号" : "Your phone number"} 
                   required 
                   value={bookingPhone}
                   onChange={(e) => setBookingPhone(e.target.value)}
@@ -190,7 +191,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
                 />
               </div>
             </div>
-            <button type="submit" className={styles.bookingSubmitBtn}>立即预约</button>
+            <button type="submit" className={styles.bookingSubmitBtn}>{lang === "zh" ? "立即预约" : "Submit Booking"}</button>
           </form>
         </div>
 
@@ -216,7 +217,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
                   <button 
                     className={styles.mobileToggleBtn}
                     onClick={() => toggleColumn(col.id)}
-                    aria-label={isOpen ? "收起列表" : "展开列表"}
+                    aria-label={isOpen ? (lang === "zh" ? "收起列表" : "Collapse") : (lang === "zh" ? "展开列表" : "Expand")}
                   >
                     <span className={`${styles.mobileToggleIcon} ${isOpen ? styles.iconRotated : ""}`}>+</span>
                   </button>
@@ -261,7 +262,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
               lineHeight: "1.5"
             }}
           >
-            {data?.copyright || "Copyright © 2026 深圳智鼎味来科技有限公司. 保留所有权利。"}
+            {data?.copyright || (lang === "zh" ? "Copyright © 2026 深圳智鼎味来科技有限公司. 保留所有权利。" : "Copyright © 2026 Shenzhen Zhiding Weilai Technology Co., Ltd. All Rights Reserved.")}
           </div>
           <ul 
             className={styles.legalLinks}
@@ -275,13 +276,13 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
             }}
           >
             <li className={styles.legalItem}>
-              <a href="#" style={{ color: "var(--color-text-secondary)" }}>隐私政策</a>
+              <a href="#" style={{ color: "var(--color-text-secondary)" }}>{lang === "zh" ? "隐私政策" : "Privacy Policy"}</a>
             </li>
             <li className={styles.legalItem}>
-              <a href="#" style={{ color: "var(--color-text-secondary)" }}>服务条款</a>
+              <a href="#" style={{ color: "var(--color-text-secondary)" }}>{lang === "zh" ? "服务条款" : "Terms of Service"}</a>
             </li>
             <li className={styles.legalItem}>
-              <a href="#" style={{ color: "var(--color-text-secondary)" }}>网站地图</a>
+              <a href="#" style={{ color: "var(--color-text-secondary)" }}>{lang === "zh" ? "网站地图" : "Sitemap"}</a>
             </li>
           </ul>
         </div>
@@ -303,10 +304,12 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </div>
-              <h3 className={styles.modalTitle}>预约登记成功</h3>
+              <h3 className={styles.modalTitle}>{lang === "zh" ? "预约登记成功" : "Registration Successful"}</h3>
             </div>
             <p className={styles.modalDescription}>
-              我们已收到您的预约申请！为了能更精准地了解您的烹饪设备需求，为您提供更切合的智慧烹饪解决方案，诚邀您花 1 分钟填写一份详细体验意向问卷。
+              {lang === "zh"
+                ? "我们已收到您的预约申请！为了能更精准地了解您的烹饪设备需求，为您提供更切合的智慧烹饪解决方案，诚邀您花 1 分钟填写一份详细体验意向问卷。"
+                : "We have received your application! To better understand your equipment needs and tailor the best smart culinary solution, we invite you to take 1 minute to fill out a brief inquiry form."}
             </p>
             <div className={styles.modalActions}>
               <a 
