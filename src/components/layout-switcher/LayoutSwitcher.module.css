@@ -1,6 +1,6 @@
 .switcherContainer {
   width: 100%;
-  height: 38px;
+  height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,7 +18,16 @@
 .switcherContent {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 24px;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .switcherTitle {
@@ -27,55 +36,140 @@
   letter-spacing: -0.01em;
 }
 
+.detectBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background-color: rgba(52, 199, 89, 0.1);
+  color: #34c759;
+  border: 1px solid rgba(52, 199, 89, 0.18);
+  user-select: none;
+  transition: all 0.3s var(--ease-apple);
+}
+
+/* 亮色模式微调 */
+:global([data-theme="light"]) .detectBadge {
+  background-color: rgba(52, 199, 89, 0.08);
+  color: #248a3d;
+  border-color: rgba(52, 199, 89, 0.15);
+}
+
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #34c759;
+  box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.7);
+  animation: pulse 2s infinite;
+}
+
+:global([data-theme="light"]) .pulseDot {
+  background-color: #248a3d;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 199, 89, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 5px rgba(52, 199, 89, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(52, 199, 89, 0);
+  }
+}
+
 .switcherLinks {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
+  background-color: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 2px;
+  width: 240px; /* 固定宽度以确保完全对称 */
+}
+
+:global([data-theme="dark"]) .switcherLinks {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.activeIndicator {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  background-color: var(--color-btn-bg);
+  border-radius: 18px;
+  transition: transform 0.35s var(--ease-apple);
+  box-shadow: 0 2px 6px rgba(0, 113, 227, 0.25);
+  z-index: 1;
+}
+
+.indicatorDesktop {
+  transform: translateX(0);
+}
+
+.indicatorMobile {
+  transform: translateX(100%);
 }
 
 .switcherLink {
+  flex: 1;
+  position: relative;
+  z-index: 2;
   background: transparent;
-  color: var(--color-text);
-  font-size: 13px;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 12px;
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 12px;
+  padding: 5px 0;
+  text-align: center;
+  border-radius: 18px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  opacity: 0.7;
-  transition: all 0.3s var(--ease-apple);
-  border: 1px solid transparent;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: color 0.35s var(--ease-apple), opacity 0.35s var(--ease-apple);
 }
 
 .switcherLink:hover {
   opacity: 1;
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-/* 亮色模式微调 */
-:global([data-theme="light"]) .switcherLink:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--color-text);
 }
 
 .activeLink {
+  color: #ffffff !important;
   opacity: 1;
-  color: var(--color-btn-text);
-  background-color: var(--color-btn-bg);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-}
-
-.activeLink:hover {
-  background-color: var(--color-btn-hover);
-  color: var(--color-btn-text);
-}
-
-.divider {
-  color: var(--color-text-tertiary);
-  font-weight: 300;
-  user-select: none;
 }
 
 .icon {
   font-size: 14px;
+}
+
+/* 移动端/小屏响应式适配 */
+@media (max-width: 768px) {
+  .switcherContent {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 580px) {
+  .detectBadge {
+    display: none;
+  }
+  .switcherContent {
+    gap: 8px;
+  }
 }

@@ -31,8 +31,17 @@ const App: React.FC = () => {
     if (modeInUrl === "desktop" || modeInUrl === "mobile") {
       return modeInUrl;
     }
-    const savedMode = localStorage.getItem("layout_mode");
-    return (savedMode === "desktop" || savedMode === "mobile") ? savedMode : "mobile";
+    // 自动根据用户打开网页浏览器的类型，自适应选择匹配的适配类型
+    if (typeof window !== "undefined" && navigator) {
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+      const isSmallScreen = window.innerWidth <= 768;
+      if (isMobileUA || isSmallScreen) {
+        return "mobile";
+      }
+    }
+    return "desktop";
   });
 
   // NOTE: 检测是否为物理小屏设备 (<= 768px)
