@@ -83,6 +83,7 @@ export interface SiteData {
     disclaimer: string;
     address: string;
     phone: string;
+    email?: string;
     copyright: string;
     columns?: FooterColumn[];
   };
@@ -223,6 +224,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
   const [footerDisclaimer, setFooterDisclaimer] = useState(siteData.footer?.disclaimer || "");
   const [footerAddress, setFooterAddress] = useState(siteData.footer?.address || "");
   const [footerPhone, setFooterPhone] = useState(siteData.footer?.phone || "");
+  const [footerEmail, setFooterEmail] = useState(siteData.footer?.email || "");
   const [footerCopyright, setFooterCopyright] = useState(siteData.footer?.copyright || "");
   const [footerColumns, setFooterColumns] = useState<FooterColumn[]>(
     (siteData.footer?.columns && siteData.footer.columns.length > 0) ? siteData.footer.columns : DEFAULT_COLUMNS
@@ -273,6 +275,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
     setFooterDisclaimer(siteData.footer?.disclaimer || "");
     setFooterAddress(siteData.footer?.address || "");
     setFooterPhone(siteData.footer?.phone || "");
+    setFooterEmail(siteData.footer?.email || "");
     setFooterCopyright(siteData.footer?.copyright || "");
     setFooterColumns(
       (siteData.footer?.columns && siteData.footer.columns.length > 0) ? siteData.footer.columns : DEFAULT_COLUMNS
@@ -360,7 +363,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       },
       footer: {
         disclaimer: footerDisclaimer, address: footerAddress,
-        phone: footerPhone, copyright: footerCopyright, columns: footerColumns
+        phone: footerPhone, email: footerEmail, copyright: footerCopyright, columns: footerColumns
       },
       adminPasswordHash: newHash
     };
@@ -658,6 +661,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         disclaimer: footerDisclaimer,
         address: footerAddress,
         phone: footerPhone,
+        email: footerEmail,
         copyright: footerCopyright,
         columns: footerColumns
       },
@@ -1523,6 +1527,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
                         className={styles.inputField} 
                         value={footerPhone} 
                         onChange={(e) => setFooterPhone(e.target.value)} 
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>联系电子邮箱 (Email)</label>
+                      <input 
+                        type="email" 
+                        className={styles.inputField} 
+                        value={footerEmail} 
+                        onChange={(e) => setFooterEmail(e.target.value)} 
                       />
                     </div>
                     <div className={styles.formGroup}>

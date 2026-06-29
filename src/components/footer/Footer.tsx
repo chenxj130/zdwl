@@ -19,6 +19,7 @@ interface FooterProps {
     disclaimer: string;
     address: string;
     phone: string;
+    email?: string;
     copyright: string;
     bookingUrl?: string;
     columns?: FooterColumn[];
@@ -164,6 +165,16 @@ const Footer: React.FC<FooterProps> = ({ data, lang = "zh" }) => {
               </svg>
               {lang === "zh" ? "商务合作：" : "Contact: "}{data?.phone || "15507556167"}
             </span>
+            {/* Email 联系方式 */}
+            {(data?.email) && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--color-accent-red)" }}>
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="M22 4L12 13L2 4" />
+                </svg>
+                Email：<a href={`mailto:${data.email}`} style={{ color: "inherit", textDecoration: "none" }}>{data.email}</a>
+              </span>
+            )}
           </p>
         </div>
 
