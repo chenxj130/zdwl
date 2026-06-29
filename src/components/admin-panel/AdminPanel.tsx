@@ -86,6 +86,7 @@ export interface SiteData {
     copyright: string;
     columns?: FooterColumn[];
   };
+  adminPasswordHash?: string;
 }
 
 const DEFAULT_COLUMNS: FooterColumn[] = [
@@ -285,11 +286,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
     e.preventDefault();
     setErrorMsg("");
 
-    // NOTE: 优先检查本地是否有自定义密码哈希
-    const storedHash = getStoredPasswordHash();
+    // NOTE: 优先读取配置文件中的密码哈希，其次读取本地 LocalStorage 缓存
+    const storedHash = siteData.adminPasswordHash || getStoredPasswordHash();
 
     if (storedHash) {
-      // 存在自定义密码 → 使用本地 SHA-256 哈希比对
+      // 存在自定义密码 → 使用 SHA-256 哈希比对
       const isMatch = await verifyPassword(passwordInput, storedHash);
       if (isMatch) {
         localStorage.setItem("admin_token", "mock_admin_token_session_2026");
@@ -352,8 +353,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       return;
     }
 
-    // 验证旧密码
-    const storedHash = getStoredPasswordHash();
+    // 验证旧密码（优先读取配置文件哈希，其次读取本地 LocalStorage，最后为 admin）
+    const storedHash = siteData.adminPasswordHash || getStoredPasswordHash();
     if (storedHash) {
       const isOldValid = await verifyPassword(oldPassword, storedHash);
       if (!isOldValid) {
@@ -370,14 +371,70 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       }
     }
 
-    // 哈希并保存新密码
+    // 计算新密码哈希并缓存本地以兜底
     const newHash = await hashPassword(newPassword);
     savePasswordHash(newHash);
-    setPasswordMsg("密码修改成功！下次登录时将使用新密码");
-    setPasswordMsgType("success");
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+
+    // 整合数据包，把密码哈希加入并执行持久化发布
+    const updatedData: SiteData = {
+      navbar: { brandName: navbarBrand },
+      about: { title: aboutTitle, content: aboutContent },
+      hero: { eyebrow: heroEyebrow, title: heroTitle, subtitle: heroSubtitle },
+      showcase: { eyebrow: showcaseEyebrow, title: showcaseTitle, products },
+      advantages: {
+        sectionEyebrow: advantagesEyebrow,
+        sectionTitle: advantagesTitle,
+        techTitle, techDesc, techImage, techImageAlt,
+        standardTitle, standardDesc, syncTitle, syncDesc
+      },
+      founder: {
+        name: founderName, title: founderTitle, bio: founderBio,
+        image: founderImage, imageAlt: founderImageAlt,
+        badgeLine: founderBadgeLine, badgeLabel: founderBadgeLabel
+      },
+      footer: {
+        disclaimer: footerDisclaimer, address: footerAddress,
+        phone: footerPhone, copyright: footerCopyright, columns: footerColumns
+      },
+      adminPasswordHash: newHash
+    };
+
+    setIsSaving(true);
+    const token = localStorage.getItem("admin_token") || "";
+
+    try {
+      const response = await fetch("http://localhost:9876/api/site-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedData)
+      });
+      
+      const resData = await response.json();
+      if (response.ok && resData.success) {
+        onSave(updatedData);
+        setPasswordMsg("密码修改并保存发布成功！请将修改推送到Git以全网多用户同步");
+        setPasswordMsgType("success");
+        setToastMsg("密码发布成功，请Git同步");
+        setTimeout(() => setToastMsg(""), 2000);
+      } else {
+        onSave(updatedData);
+        setPasswordMsg("密码已保存在本地（本地保存成功，持久化写入失败）");
+        setPasswordMsgType("success");
+      }
+    } catch (err) {
+      // 离线 Fallback
+      onSave(updatedData);
+      setPasswordMsg("密码已保存在本地（未连通持久化后端）");
+      setPasswordMsgType("success");
+    } finally {
+      setIsSaving(false);
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    }
   };
 
   const handleProductChange = (index: number, field: string, value: any) => {
@@ -637,7 +694,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         phone: footerPhone,
         copyright: footerCopyright,
         columns: footerColumns
-      }
+      },
+      adminPasswordHash: siteData.adminPasswordHash
     };
 
     const token = localStorage.getItem("admin_token") || "";
@@ -925,19 +983,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
 
   return (
     <>
-      {/* 仪表盘只读入口按钮 (独立于管理面板，无需密码) */}
-      <button
-        className={styles.adminTrigger}
-        style={{ bottom: "78px" }}
-        onClick={() => setIsDashboardReadOnlyOpen(true)}
-        aria-label="Open analytics dashboard"
-        title="网站数据仪表盘（只读）"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M18 20V10" /><path d="M12 20V4" /><path d="M6 20v-6" />
-        </svg>
-      </button>
-
       {/* Floating Gear Button in Corner */}
       <button 
         className={styles.adminTrigger} 
@@ -970,11 +1015,52 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         </div>
 
         {!isUnlocked ? (
-          /* Password Lock view */
-          <div style={{ padding: "40px 24px" }}>
-            <form onSubmit={handleUnlock} className={styles.lockModal}>
-              <div className={styles.lockTitle}>访问管理员后台</div>
-              <div className={styles.lockDesc}>此区域受密码保护，请输入管理员密码进行操作。 (默认密码: <code>admin</code>)</div>
+          /* 二级导航入口选择 (只读仪表盘 / 管理员后台) */
+          <div style={{ padding: "24px" }}>
+            {/* 1. 快速通道：数据分析只读仪表盘 */}
+            <div style={{
+              background: "var(--color-surface-elevated)",
+              border: "1px solid var(--color-border)",
+              borderRadius: "12px",
+              padding: "16px",
+              marginBottom: "24px",
+              textAlign: "center"
+            }}>
+              <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text)", marginBottom: "8px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                <span>📊</span> 网站数据仪表盘
+              </div>
+              <div style={{ fontSize: "11px", color: "var(--color-text-secondary)", marginBottom: "12px", lineHeight: "1.4" }}>
+                免密快速查看网站的浏览量、访问时长和预约台账，仅提供只读展示权限。
+              </div>
+              <button 
+                type="button" 
+                className={styles.saveBtn} 
+                style={{ 
+                  background: "rgba(41, 151, 255, 0.1)", 
+                  color: "var(--color-link)", 
+                  border: "1px solid rgba(41, 151, 255, 0.2)",
+                  padding: "8px 16px",
+                  fontSize: "12px",
+                  width: "100%",
+                  cursor: "pointer"
+                }}
+                onClick={() => {
+                  setIsOpen(false); // 关闭管理员面板抽屉
+                  setIsDashboardReadOnlyOpen(true); // 打开只读仪表盘抽屉
+                }}
+              >
+                免密查看只读数据
+              </button>
+            </div>
+
+            {/* 2. 安全通道：管理员控制台 */}
+            <form onSubmit={handleUnlock} style={{ borderTop: "1px solid var(--color-border)", paddingTop: "24px" }}>
+              <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text)", marginBottom: "8px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                <span>🔑</span> 管理控制台
+              </div>
+              <div className={styles.lockDesc} style={{ fontSize: "11px", color: "var(--color-text-secondary)", marginBottom: "16px", textAlign: "center" }}>
+                输入密码登录以进行文案编辑与台账状态更改操作。
+              </div>
               
               <div className={styles.formGroup}>
                 <input 
@@ -989,7 +1075,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
               </div>
 
               <button type="submit" className={styles.saveBtn} style={{ marginTop: "12px", width: "100%" }}>
-                进入后台
+                密码验证登录
               </button>
             </form>
           </div>
