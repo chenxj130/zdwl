@@ -176,9 +176,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
   // NOTE: Tab 切换状态 —— "dashboard" 数据仪表盘 / "editor" 内容编辑器
   const [activeTab, setActiveTab] = useState<"dashboard" | "editor">("dashboard");
 
-  // NOTE: 仪表盘只读面板（独立入口，无需密码）
-  const [isDashboardReadOnlyOpen, setIsDashboardReadOnlyOpen] = useState(false);
-
   // NOTE: 密码修改相关状态
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -1015,58 +1012,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         </div>
 
         {!isUnlocked ? (
-          /* 二级导航入口选择 (只读仪表盘 / 管理员后台) */
-          <div style={{ padding: "24px" }}>
-            {/* 1. 快速通道：数据分析只读仪表盘 */}
-            <div style={{
-              background: "var(--color-surface-elevated)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "12px",
-              padding: "16px",
-              marginBottom: "24px",
-              textAlign: "center"
-            }}>
-              <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text)", marginBottom: "8px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-                <span>📊</span> 网站数据仪表盘
-              </div>
-              <div style={{ fontSize: "11px", color: "var(--color-text-secondary)", marginBottom: "12px", lineHeight: "1.4" }}>
-                免密快速查看网站的浏览量、访问时长和预约台账，仅提供只读展示权限。
-              </div>
-              <button 
-                type="button" 
-                className={styles.saveBtn} 
-                style={{ 
-                  background: "rgba(41, 151, 255, 0.1)", 
-                  color: "var(--color-link)", 
-                  border: "1px solid rgba(41, 151, 255, 0.2)",
-                  padding: "8px 16px",
-                  fontSize: "12px",
-                  width: "100%",
-                  cursor: "pointer"
-                }}
-                onClick={() => {
-                  setIsOpen(false); // 关闭管理员面板抽屉
-                  setIsDashboardReadOnlyOpen(true); // 打开只读仪表盘抽屉
-                }}
-              >
-                免密查看只读数据
-              </button>
-            </div>
-
-            {/* 2. 安全通道：管理员控制台 */}
-            <form onSubmit={handleUnlock} style={{ borderTop: "1px solid var(--color-border)", paddingTop: "24px" }}>
-              <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text)", marginBottom: "8px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-                <span>🔑</span> 管理控制台
-              </div>
-              <div className={styles.lockDesc} style={{ fontSize: "11px", color: "var(--color-text-secondary)", marginBottom: "16px", textAlign: "center" }}>
-                输入密码登录以进行文案编辑与台账状态更改操作。
-              </div>
+          /* 统一密码验证登录界面 */
+          <div style={{ padding: "40px 24px" }}>
+            <form onSubmit={handleUnlock} className={styles.lockModal} style={{ position: "static", transform: "none", width: "100%", maxWidth: "none", boxShadow: "none", padding: "0" }}>
+              <div className={styles.lockTitle} style={{ textAlign: "center", marginBottom: "8px" }}>访问控制台</div>
+              <div className={styles.lockDesc} style={{ textAlign: "center", marginBottom: "20px" }}>此区域受密码保护，请输入管理员密码以进行管理与数据查看。</div>
               
               <div className={styles.formGroup}>
                 <input 
                   type="password" 
                   className={styles.inputField} 
-                  placeholder="请输入管理密码" 
+                  placeholder="请输入登录密码" 
                   value={passwordInput} 
                   onChange={(e) => setPasswordInput(e.target.value)}
                   autoFocus
@@ -1815,26 +1771,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
             </div>
           </>
         )}
-      </div>
-
-      {/* 只读仪表盘浮层 */}
-      <div 
-        className={`${styles.drawerOverlay} ${isDashboardReadOnlyOpen ? styles.drawerOverlayActive : ""}`} 
-        onClick={() => setIsDashboardReadOnlyOpen(false)}
-      ></div>
-      <div className={`${styles.drawer} ${isDashboardReadOnlyOpen ? styles.drawerActive : ""}`}>
-        <div className={styles.header}>
-          <h3>📊 网站数据仪表盘</h3>
-          <button className={styles.closeBtn} onClick={() => setIsDashboardReadOnlyOpen(false)} aria-label="Close dashboard">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-        <div className={styles.content}>
-          <Dashboard readOnly={true} />
-        </div>
       </div>
 
       {toastMsg && (
