@@ -6,7 +6,7 @@ import {
   verifyPassword,
   getStoredPasswordHash,
   savePasswordHash,
-  DEFAULT_PASSWORD,
+  generateSessionToken,
 } from "../../utils/cryptoUtils";
 
 export interface ProductStat {
@@ -228,10 +228,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
     (siteData.footer?.columns && siteData.footer.columns.length > 0) ? siteData.footer.columns : DEFAULT_COLUMNS
   );
 
-  // 检查本地 Token 自动解锁
+  // 检查本地 Token 自动恢复会话（token 由登录时动态生成）
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
-    if (token === "mock_admin_token_session_2026") {
+    if (token && token.length >= 32) {
       setIsUnlocked(true);
     }
   }, []);
@@ -283,50 +283,23 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
     e.preventDefault();
     setErrorMsg("");
 
-    // NOTE: 优先读取配置文件中的密码哈希，其次读取本地 LocalStorage 缓存
+    // NOTE: 统一使用配置文件中的密码哈希验证，无明文后备密码
     const storedHash = siteData.adminPasswordHash || getStoredPasswordHash();
 
-    if (storedHash) {
-      // 存在自定义密码 → 使用 SHA-256 哈希比对
-      const isMatch = await verifyPassword(passwordInput, storedHash);
-      if (isMatch) {
-        localStorage.setItem("admin_token", "mock_admin_token_session_2026");
-        setIsUnlocked(true);
-        setPasswordInput("");
-        return;
-      } else {
-        setErrorMsg("密码错误，请输入正确的管理员密码");
-        return;
-      }
+    if (!storedHash) {
+      setErrorMsg("管理员密码未配置，请联系管理员");
+      return;
     }
 
-    // 无自定义密码 → 尝试后端验证，再 fallback 到默认密码
-    try {
-      const response = await fetch("http://localhost:9876/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password: passwordInput }),
-      });
-      const resData = await response.json();
-      if (response.ok && resData.success) {
-        localStorage.setItem("admin_token", resData.token);
-        setIsUnlocked(true);
-        setPasswordInput("");
-      } else {
-        setErrorMsg(resData.error || "登录失败，请检查密码");
-      }
-    } catch (err) {
-      // 离线 Fallback: 后端离线时，使用默认密码 admin 验证
-      if (passwordInput === DEFAULT_PASSWORD) {
-        localStorage.setItem("admin_token", "mock_admin_token_session_2026");
-        setIsUnlocked(true);
-        setErrorMsg("");
-        setPasswordInput("");
-      } else {
-        setErrorMsg("密码错误，请输入正确的管理员密码");
-      }
+    const isMatch = await verifyPassword(passwordInput, storedHash);
+    if (isMatch) {
+      // 生成随机会话 token，防止固定 token 被伪造
+      const sessionToken = generateSessionToken();
+      localStorage.setItem("admin_token", sessionToken);
+      setIsUnlocked(true);
+      setPasswordInput("");
+    } else {
+      setErrorMsg("密码错误，请输入正确的管理员密码");
     }
   };
 
@@ -350,22 +323,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       return;
     }
 
-    // 验证旧密码（优先读取配置文件哈希，其次读取本地 LocalStorage，最后为 admin）
+    // 验证旧密码（读取配置文件哈希 → 本地 LocalStorage 缓存）
     const storedHash = siteData.adminPasswordHash || getStoredPasswordHash();
-    if (storedHash) {
-      const isOldValid = await verifyPassword(oldPassword, storedHash);
-      if (!isOldValid) {
-        setPasswordMsg("旧密码验证失败");
-        setPasswordMsgType("error");
-        return;
-      }
-    } else {
-      // 未设置过自定义密码时，旧密码必须是默认密码
-      if (oldPassword !== DEFAULT_PASSWORD) {
-        setPasswordMsg("旧密码验证失败（默认密码: admin）");
-        setPasswordMsgType("error");
-        return;
-      }
+    if (!storedHash) {
+      setPasswordMsg("管理员密码未配置，无法修改");
+      setPasswordMsgType("error");
+      return;
+    }
+    const isOldValid = await verifyPassword(oldPassword, storedHash);
+    if (!isOldValid) {
+      setPasswordMsg("旧密码验证失败");
+      setPasswordMsgType("error");
+      return;
     }
 
     // 计算新密码哈希并缓存本地以兜底

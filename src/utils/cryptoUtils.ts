@@ -49,11 +49,20 @@ export function savePasswordHash(hash: string): void {
 }
 
 /**
- * 清除已保存的自定义密码哈希（恢复为默认密码 admin）
+ * 清除已保存的自定义密码哈希
  */
 export function clearPasswordHash(): void {
   localStorage.removeItem(STORAGE_KEY);
 }
 
-/** 默认管理员密码 */
-export const DEFAULT_PASSWORD = "admin";
+/**
+ * 生成安全的随机会话 Token，防止硬编码 token 被伪造
+ * @returns 随机 hex 字符串作为会话标识
+ */
+export function generateSessionToken(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
