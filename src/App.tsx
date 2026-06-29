@@ -123,6 +123,21 @@ const App: React.FC = () => {
           localStorage.setItem("site_data_zh", JSON.stringify(parsed));
         }
 
+        // 动态合并并同步最新配置中可能缺失的新特性（如：创始人故事、Email）
+        let needSave = false;
+        if (parsed.founder && !parsed.founder.story) {
+          parsed.founder.story = DEFAULT_SITE_DATA.founder.story;
+          needSave = true;
+        }
+        if (parsed.footer && !parsed.footer.email) {
+          parsed.footer.email = DEFAULT_SITE_DATA.footer.email;
+          needSave = true;
+        }
+        if (needSave) {
+          localStorage.setItem("site_data_zh", JSON.stringify(parsed));
+          localStorage.setItem("site_data", JSON.stringify(parsed));
+        }
+
         return parsed;
       } catch (e) {
         console.error("Failed to parse site_data_zh", e);
@@ -136,7 +151,23 @@ const App: React.FC = () => {
     const savedData = localStorage.getItem("site_data_en");
     if (savedData) {
       try {
-        return JSON.parse(savedData);
+        const parsed = JSON.parse(savedData);
+        
+        // 动态合并并同步最新配置中可能缺失的新特性（如：创始人故事、Email）
+        let needSave = false;
+        if (parsed.founder && !parsed.founder.story) {
+          parsed.founder.story = DEFAULT_SITE_DATA_EN.founder.story;
+          needSave = true;
+        }
+        if (parsed.footer && !parsed.footer.email) {
+          parsed.footer.email = DEFAULT_SITE_DATA_EN.footer.email;
+          needSave = true;
+        }
+        if (needSave) {
+          localStorage.setItem("site_data_en", JSON.stringify(parsed));
+        }
+
+        return parsed;
       } catch (e) {
         console.error("Failed to parse site_data_en", e);
       }

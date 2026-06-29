@@ -159,6 +159,29 @@ const DEFAULT_COLUMNS: FooterColumn[] = [
   }
 ];
 
+const DEFAULT_STORY_EXPERIENCES: FounderExperience[] = [
+  {
+    time: "2010年3月至2019年5月",
+    detail: "就职于深圳繁兴科技有限公司（世界首台中餐烹饪机器人研发、生产厂家），2010年参与深圳首个中餐烹饪机器人餐厅的市场可行性研究、方案设计及商用示范的落地推广。"
+  },
+  {
+    time: "2015年至2019年",
+    detail: "负责华南、西南大区总监业务的开发与管理工作，期间围绕中餐涵盖正餐、快餐连锁、团餐及中央厨房/食品加工厂4大业态业务场景，完成100+中餐智能化烹饪样板示范点升级应用的设计与运营交付。"
+  },
+  {
+    time: "2019年6月至2023年10月",
+    detail: "就职于珠海优特智厨科技有限公司，基于“数字化餐饮”上下游完整生态供应链协同，重点研究与重塑全新商业模式的渠道下沉与建设。"
+  },
+  {
+    time: "2023年10月至2024年5月",
+    detail: "高效餐饮模型验证创业。"
+  },
+  {
+    time: "2024年6月至今",
+    detail: "创办深圳智鼎味来科技有限，聚焦“数智化餐饮整体解决方案”战略，以“科技传承中华饮食文化，让世界感知中国味道”为使命，恪守“科技向膳食 美味生活”之初心，让人们从繁琐的中餐烹饪中解放出来，共享安全与美味的美好生活。"
+  }
+];
+
 interface AdminPanelProps {
   siteData: SiteData;
   onSave: (newData: SiteData) => void;
@@ -232,7 +255,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
   const [founderBadgeLabel, setFounderBadgeLabel] = useState(siteData.founder.badgeLabel || "AI COOKING EXPLORATION");
   const [founderStoryExpertise, setFounderStoryExpertise] = useState(siteData.founder.story?.expertise || "");
   const [founderStoryExperiences, setFounderStoryExperiences] = useState<FounderExperience[]>(
-    siteData.founder.story?.experiences || []
+    (siteData.founder.story?.experiences && siteData.founder.story.experiences.length > 0)
+      ? siteData.founder.story.experiences
+      : DEFAULT_STORY_EXPERIENCES
   );
 
   // Footer States
@@ -287,7 +312,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
     setFounderBadgeLine(siteData.founder.badgeLine || "16+ YEARS");
     setFounderBadgeLabel(siteData.founder.badgeLabel || "AI COOKING EXPLORATION");
     setFounderStoryExpertise(siteData.founder.story?.expertise || "");
-    setFounderStoryExperiences(siteData.founder.story?.experiences || []);
+    setFounderStoryExperiences(
+      (siteData.founder.story?.experiences && siteData.founder.story.experiences.length > 0)
+        ? siteData.founder.story.experiences
+        : DEFAULT_STORY_EXPERIENCES
+    );
 
     setFooterDisclaimer(siteData.footer?.disclaimer || "");
     setFooterAddress(siteData.footer?.address || "");
