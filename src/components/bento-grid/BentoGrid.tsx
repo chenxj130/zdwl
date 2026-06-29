@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./BentoGrid.module.css";
 import heroImg from "../../assets/cooker-hero.png";
 import founderImg from "../../assets/founder.png";
@@ -14,6 +14,13 @@ interface BentoGridProps {
       imageAlt?: string;
       badgeLine: string;
       badgeLabel: string;
+      story?: {
+        expertise: string;
+        experiences: {
+          time: string;
+          detail: string;
+        }[];
+      };
     };
     advantages: {
       sectionEyebrow: string;
@@ -36,6 +43,31 @@ interface BentoGridProps {
  * NOTE: 导航栏「核心优势」锚点指向整个 section，「创始人」锚点指向内部的创始人卡片
  */
 const BentoGrid: React.FC<BentoGridProps> = ({ data, lang = "zh" }) => {
+  const [isStoryOpen, setIsStoryOpen] = useState(false);
+
+  // 控制 Modal 开启时禁用 body 滚动
+  useEffect(() => {
+    if (isStoryOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isStoryOpen]);
+
+  // 支持键盘 ESC 键关闭 Modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsStoryOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // 相对路径适配工具函数，用于解决 file:// 协议绝对路径寻址 Bug
   const resolveImagePath = (path: string) => {
     if (!path) return "";
@@ -110,7 +142,11 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data, lang = "zh" }) => {
           </div>
           
           {/* Typographic Badge Design detail */}
-          <div className={styles.founderBadge}>
+          <div 
+            className={styles.founderBadge} 
+            onClick={() => setIsStoryOpen(true)}
+            title={lang === "zh" ? "点击查看创始人16年探索故事" : "Click to view founder's 16-year story"}
+          >
             <div className={styles.badgeLine} style={{ color: "#ffffff" }}>{data.founder.badgeLine || "16+ YEARS"}</div>
             <div className={styles.badgeLabel} style={{ color: "rgba(255, 255, 255, 0.6)" }}>{data.founder.badgeLabel || "AI COOKING EXPLORATION"}</div>
           </div>
@@ -180,6 +216,60 @@ const BentoGrid: React.FC<BentoGridProps> = ({ data, lang = "zh" }) => {
           </div>
         </div>
       </div>
+
+      {/* 创始人 16 年探索历程二级展示页面 (Modal) */}
+      {isStoryOpen && (
+        <div className={styles.storyOverlay} onClick={() => setIsStoryOpen(false)}>
+          <div className={styles.storyModal} onClick={(e) => e.stopPropagation()}>
+            <button 
+              className={styles.storyCloseBtn} 
+              onClick={() => setIsStoryOpen(false)}
+              aria-label={lang === "zh" ? "关闭" : "Close"}
+            >
+              &times;
+            </button>
+            
+            <div className={styles.storyHeader}>
+              <span className={styles.storyBadge}>
+                {lang === "zh" ? "创始人故事" : "FOUNDER'S STORY"}
+              </span>
+              <h2 className={styles.storyTitle}>
+                {lang === "zh" ? "程华 · 16年中餐数智化先行者的历练与创变" : "Hua Cheng · 16 Years of AI Culinary Pioneering"}
+              </h2>
+              <div className={styles.storyExpertise}>
+                <span className={styles.expertiseLabel}>{lang === "zh" ? "核心擅长：" : "Expertise: "}</span>
+                <span className={styles.expertiseText}>
+                  {data.founder.story?.expertise || (lang === "zh" ? "多业态、多场景“数智化餐饮”整体解决方案的设计与应用推广。" : "Design and application promotion of 'digitized and intelligent catering' overall solutions.")}
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.storyTimeline}>
+              {(data.founder.story?.experiences || []).map((exp, idx) => {
+                const stagesZh = ["启航 · 探索火种", "跨越 · 规模交付", "沉淀 · 重塑模式", "磨砺 · 模型验证", "破局 · 初心致远"];
+                const stagesEn = ["Phase 1: Spark of Dream", "Phase 2: Scale & Delivery", "Phase 3: Restructuring Model", "Phase 4: Practical Validation", "Phase 5: Digitalization Future"];
+                const stage = lang === "zh" ? stagesZh[idx] : stagesEn[idx];
+                
+                return (
+                  <div key={idx} className={styles.timelineItem}>
+                    <div className={styles.timelineMarker}>
+                      <div className={styles.markerDot}></div>
+                      {idx < (data.founder.story?.experiences.length || 0) - 1 && <div className={styles.markerLine}></div>}
+                    </div>
+                    <div className={styles.timelineContent}>
+                      <div className={styles.timelineHeaderInfo}>
+                        <span className={styles.timelineStage}>{stage}</span>
+                        <span className={styles.timelineTime}>{exp.time}</span>
+                      </div>
+                      <p className={styles.timelineDetail}>{exp.detail}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

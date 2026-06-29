@@ -40,6 +40,16 @@ export interface FooterColumn {
   links: FooterLink[];
 }
 
+export interface FounderExperience {
+  time: string;
+  detail: string;
+}
+
+export interface FounderStory {
+  expertise: string;
+  experiences: FounderExperience[];
+}
+
 export interface SiteData {
   navbar: {
     brandName: string;
@@ -78,6 +88,7 @@ export interface SiteData {
     imageAlt?: string;
     badgeLine: string;
     badgeLabel: string;
+    story?: FounderStory;
   };
   footer: {
     disclaimer: string;
@@ -219,6 +230,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
   const [founderImageAlt, setFounderImageAlt] = useState(siteData.founder.imageAlt || "");
   const [founderBadgeLine, setFounderBadgeLine] = useState(siteData.founder.badgeLine || "16+ YEARS");
   const [founderBadgeLabel, setFounderBadgeLabel] = useState(siteData.founder.badgeLabel || "AI COOKING EXPLORATION");
+  const [founderStoryExpertise, setFounderStoryExpertise] = useState(siteData.founder.story?.expertise || "");
+  const [founderStoryExperiences, setFounderStoryExperiences] = useState<FounderExperience[]>(
+    siteData.founder.story?.experiences || []
+  );
 
   // Footer States
   const [footerDisclaimer, setFooterDisclaimer] = useState(siteData.footer?.disclaimer || "");
@@ -271,6 +286,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
     setFounderImageAlt(siteData.founder.imageAlt || "");
     setFounderBadgeLine(siteData.founder.badgeLine || "16+ YEARS");
     setFounderBadgeLabel(siteData.founder.badgeLabel || "AI COOKING EXPLORATION");
+    setFounderStoryExpertise(siteData.founder.story?.expertise || "");
+    setFounderStoryExperiences(siteData.founder.story?.experiences || []);
 
     setFooterDisclaimer(siteData.footer?.disclaimer || "");
     setFooterAddress(siteData.footer?.address || "");
@@ -359,7 +376,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       founder: {
         name: founderName, title: founderTitle, bio: founderBio,
         image: founderImage, imageAlt: founderImageAlt,
-        badgeLine: founderBadgeLine, badgeLabel: founderBadgeLabel
+        badgeLine: founderBadgeLine, badgeLabel: founderBadgeLabel,
+        story: {
+          expertise: founderStoryExpertise,
+          experiences: founderStoryExperiences
+        }
       },
       footer: {
         disclaimer: footerDisclaimer, address: footerAddress,
@@ -404,6 +425,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       setNewPassword("");
       setConfirmPassword("");
     }
+  };
+
+  const handleFounderExpChange = (idx: number, field: "time" | "detail", value: string) => {
+    setFounderStoryExperiences((prev) => {
+      const copy = [...prev];
+      copy[idx] = { ...copy[idx], [field]: value };
+      return copy;
+    });
   };
 
   const handleProductChange = (index: number, field: string, value: any) => {
@@ -655,7 +684,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         image: founderImage,
         imageAlt: founderImageAlt,
         badgeLine: founderBadgeLine,
-        badgeLabel: founderBadgeLabel
+        badgeLabel: founderBadgeLabel,
+        story: {
+          expertise: founderStoryExpertise,
+          experiences: founderStoryExperiences
+        }
       },
       footer: {
         disclaimer: footerDisclaimer,
@@ -1484,6 +1517,47 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
                           value={founderBadgeLabel} 
                           onChange={(e) => setFounderBadgeLabel(e.target.value)} 
                         />
+                      </div>
+                    </div>
+
+                    {/* 创始人故事 (二级弹窗) 内容设置 */}
+                    <div style={{ marginTop: "24px", borderTop: "1px solid var(--color-border)", paddingTop: "20px" }}>
+                      <div className={styles.statsSectionLabel} style={{ marginBottom: "16px", color: "var(--color-link)", fontWeight: "600" }}>
+                        创始人故事二级跳转页面内容配置 (16年履历时间轴)
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label>核心擅长领域 (Core Expertise)</label>
+                        <input 
+                          type="text" 
+                          className={styles.inputField} 
+                          value={founderStoryExpertise} 
+                          onChange={(e) => setFounderStoryExpertise(e.target.value)} 
+                        />
+                      </div>
+                      <div style={{ marginTop: "20px" }}>
+                        <label style={{ display: "block", marginBottom: "12px", fontWeight: "600", fontSize: "13px" }}>经历时间节点列表 (按起承转合阶段)</label>
+                        {(founderStoryExperiences || []).map((exp, expIdx) => (
+                          <div key={expIdx} style={{ backgroundColor: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "12px", padding: "16px", marginBottom: "16px" }}>
+                            <div className={styles.formGroup} style={{ marginBottom: "12px" }}>
+                              <label style={{ fontSize: "11px", opacity: 0.8, color: "var(--color-link)", fontWeight: "600" }}>节点 {expIdx + 1} 时间段 (如: 2010年3月至2019年5月)</label>
+                              <input 
+                                type="text" 
+                                className={styles.inputField} 
+                                value={exp.time} 
+                                onChange={(e) => handleFounderExpChange(expIdx, "time", e.target.value)} 
+                              />
+                            </div>
+                            <div className={styles.formGroup} style={{ marginBottom: "0" }}>
+                              <label style={{ fontSize: "11px", opacity: 0.8, color: "var(--color-link)", fontWeight: "600" }}>从业经历与故事细节</label>
+                              <textarea 
+                                className={styles.textareaField} 
+                                style={{ height: "70px", resize: "vertical" }}
+                                value={exp.detail} 
+                                onChange={(e) => handleFounderExpChange(expIdx, "detail", e.target.value)} 
+                              />
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>

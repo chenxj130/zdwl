@@ -334,3 +334,272 @@
     max-width: 80%;
   }
 }
+
+/* ============================
+   创始人故事二级弹窗 (Modal) 样式
+   ============================ */
+.founderBadge {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 24px;
+  position: relative;
+  z-index: 3;
+  width: fit-content;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.founderBadge:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.storyOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.4s var(--ease-apple);
+}
+
+.storyModal {
+  background: linear-gradient(135deg, rgba(22, 22, 23, 0.85) 0%, rgba(10, 10, 10, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  width: 820px;
+  max-width: 90%;
+  max-height: 82vh;
+  padding: 40px;
+  position: relative;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  animation: slideUp 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.storyModal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.storyModal::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.storyCloseBtn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.storyCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  transform: rotate(90deg);
+}
+
+.storyHeader {
+  margin-bottom: 36px;
+  text-align: left;
+}
+
+.storyBadge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-link);
+  background-color: rgba(0, 113, 227, 0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+
+.storyTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+
+.storyExpertise {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 14px 18px;
+  line-height: 1.5;
+}
+
+.expertiseLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-link);
+}
+
+.expertiseText {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 时间轴 */
+.storyTimeline {
+  position: relative;
+  margin-top: 20px;
+  padding-left: 10px;
+}
+
+.timelineItem {
+  display: flex;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.timelineItem:last-child {
+  margin-bottom: 0;
+}
+
+.timelineMarker {
+  width: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.markerDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-accent-red);
+  border: 3px solid rgba(255, 95, 86, 0.3);
+  box-shadow: 0 0 8px var(--color-accent-red);
+  z-index: 2;
+  margin-top: 6px;
+}
+
+.timelineItem:first-child .markerDot {
+  background-color: var(--color-link);
+  border-color: rgba(0, 113, 227, 0.3);
+  box-shadow: 0 0 8px var(--color-link);
+}
+
+.timelineItem:last-child .markerDot {
+  background-color: #34c759;
+  border-color: rgba(52, 199, 89, 0.3);
+  box-shadow: 0 0 10px #34c759;
+  transform: scale(1.15);
+}
+
+.markerLine {
+  width: 2px;
+  flex-grow: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-top: 6px;
+  margin-bottom: -38px; /* 贯穿到下一个项目 */
+}
+
+.timelineContent {
+  text-align: left;
+  flex-grow: 1;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 18px 20px;
+  transition: background-color 0.3s ease;
+}
+
+.timelineContent:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.timelineHeaderInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.timelineStage {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.timelineTime {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+}
+
+.timelineDetail {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .storyModal {
+    padding: 30px 20px;
+    border-radius: 20px;
+    max-height: 90vh;
+  }
+  
+  .storyTitle {
+    font-size: 22px;
+  }
+  
+  .timelineHeaderInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
