@@ -7,6 +7,7 @@ import Footer from "./components/footer/Footer";
 import AdminPanel, { type SiteData } from "./components/admin-panel/AdminPanel";
 import LayoutSwitcher from "./components/layout-switcher/LayoutSwitcher";
 import PhoneSimulator from "./components/phone-simulator/PhoneSimulator";
+import { usePageViewTracker, useSectionVisibilityTracker } from "./hooks/useAnalytics";
 import customSiteData from "./site_data.json";
 import enSiteData from "./site_data_en.json";
 
@@ -14,6 +15,15 @@ const DEFAULT_SITE_DATA: SiteData = customSiteData;
 const DEFAULT_SITE_DATA_EN: SiteData = enSiteData;
 
 const App: React.FC = () => {
+  // NOTE: 页面访问跟踪（每个会话记录一次）
+  usePageViewTracker();
+
+  // NOTE: 各区块浏览时长跟踪
+  const heroRef = useSectionVisibilityTracker("hero");
+  const showcaseRef = useSectionVisibilityTracker("showcase");
+  const bentoGridRef = useSectionVisibilityTracker("bento-grid");
+  const footerRef = useSectionVisibilityTracker("footer");
+
   // Theme state
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -231,11 +241,11 @@ const App: React.FC = () => {
           onLangChange={handleLangChange}
         />
         <main style={{ marginTop: "0" }}>
-          <Hero data={siteData.hero} about={siteData.about} lang={lang} />
-          <Showcase data={siteData.showcase} lang={lang} />
-          <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} lang={lang} />
+          <div ref={heroRef}><Hero data={siteData.hero} about={siteData.about} lang={lang} /></div>
+          <div ref={showcaseRef}><Showcase data={siteData.showcase} lang={lang} /></div>
+          <div ref={bentoGridRef}><BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} lang={lang} /></div>
         </main>
-        <Footer data={siteData.footer} lang={lang} />
+        <div ref={footerRef}><Footer data={siteData.footer} lang={lang} /></div>
       </>
     );
   }
@@ -261,11 +271,11 @@ const App: React.FC = () => {
             onLangChange={handleLangChange}
           />
           <main style={{ marginTop: "0" }}>
-            <Hero data={siteData.hero} about={siteData.about} lang={lang} />
-            <Showcase data={siteData.showcase} lang={lang} />
-            <BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} lang={lang} />
+            <div ref={heroRef}><Hero data={siteData.hero} about={siteData.about} lang={lang} /></div>
+            <div ref={showcaseRef}><Showcase data={siteData.showcase} lang={lang} /></div>
+            <div ref={bentoGridRef}><BentoGrid data={{ founder: siteData.founder, advantages: siteData.advantages }} lang={lang} /></div>
           </main>
-          <Footer data={siteData.footer} lang={lang} />
+          <div ref={footerRef}><Footer data={siteData.footer} lang={lang} /></div>
         </>
       )}
 

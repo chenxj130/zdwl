@@ -679,3 +679,36 @@
   border-color: var(--color-text-secondary);
 }
 
+/* Tab 切换栏 */
+.tabBar {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 24px;
+  gap: 0;
+  background: var(--color-surface);
+}
+
+.tabItem {
+  flex: 1;
+  padding: 14px 12px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-apple);
+  text-align: center;
+}
+
+.tabItem:hover {
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tabActive {
+  color: var(--color-link);
+  border-bottom-color: var(--color-link);
+}
+

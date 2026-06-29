@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styles from "./AdminPanel.module.css";
+import Dashboard from "./Dashboard";
+import {
+  hashPassword,
+  verifyPassword,
+  getStoredPasswordHash,
+  savePasswordHash,
+  DEFAULT_PASSWORD,
+} from "../../utils/cryptoUtils";
 
 export interface ProductStat {
   label: string;
@@ -164,6 +172,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
   const [toastMsg, setToastMsg] = useState("");
   const [activeSection, setActiveSection] = useState<string>("navbar");
 
+  // NOTE: Tab 切换状态 —— "dashboard" 数据仪表盘 / "editor" 内容编辑器
+  const [activeTab, setActiveTab] = useState<"dashboard" | "editor">("dashboard");
+
+  // NOTE: 仪表盘只读面板（独立入口，无需密码）
+  const [isDashboardReadOnlyOpen, setIsDashboardReadOnlyOpen] = useState(false);
+
+  // NOTE: 密码修改相关状态
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMsg, setPasswordMsg] = useState("");
+  const [passwordMsgType, setPasswordMsgType] = useState<"success" | "error">("error");
+
   // Form states
   const [navbarBrand, setNavbarBrand] = useState(siteData.navbar.brandName);
   
@@ -263,6 +284,25 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
+
+    // NOTE: 优先检查本地是否有自定义密码哈希
+    const storedHash = getStoredPasswordHash();
+
+    if (storedHash) {
+      // 存在自定义密码 → 使用本地 SHA-256 哈希比对
+      const isMatch = await verifyPassword(passwordInput, storedHash);
+      if (isMatch) {
+        localStorage.setItem("admin_token", "mock_admin_token_session_2026");
+        setIsUnlocked(true);
+        setPasswordInput("");
+        return;
+      } else {
+        setErrorMsg("密码错误，请输入正确的管理员密码");
+        return;
+      }
+    }
+
+    // 无自定义密码 → 尝试后端验证，再 fallback 到默认密码
     try {
       const response = await fetch("http://localhost:9876/api/login", {
         method: "POST",
@@ -280,8 +320,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         setErrorMsg(resData.error || "登录失败，请检查密码");
       }
     } catch (err) {
-      // 离线 Fallback: 后端离线时，本地输入 admin 依然允许编辑 localStorage，保障离线演示可用性
-      if (passwordInput === "admin") {
+      // 离线 Fallback: 后端离线时，使用默认密码 admin 验证
+      if (passwordInput === DEFAULT_PASSWORD) {
         localStorage.setItem("admin_token", "mock_admin_token_session_2026");
         setIsUnlocked(true);
         setErrorMsg("");
@@ -290,6 +330,54 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         setErrorMsg("密码错误，请输入正确的管理员密码");
       }
     }
+  };
+
+  /**
+   * 密码修改处理函数
+   * NOTE: 使用 Web Crypto SHA-256 哈希后保存到 LocalStorage
+   */
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordMsg("");
+
+    // 输入校验
+    if (!newPassword || newPassword.length < 4) {
+      setPasswordMsg("新密码长度不能少于 4 位");
+      setPasswordMsgType("error");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMsg("两次输入的新密码不一致");
+      setPasswordMsgType("error");
+      return;
+    }
+
+    // 验证旧密码
+    const storedHash = getStoredPasswordHash();
+    if (storedHash) {
+      const isOldValid = await verifyPassword(oldPassword, storedHash);
+      if (!isOldValid) {
+        setPasswordMsg("旧密码验证失败");
+        setPasswordMsgType("error");
+        return;
+      }
+    } else {
+      // 未设置过自定义密码时，旧密码必须是默认密码
+      if (oldPassword !== DEFAULT_PASSWORD) {
+        setPasswordMsg("旧密码验证失败（默认密码: admin）");
+        setPasswordMsgType("error");
+        return;
+      }
+    }
+
+    // 哈希并保存新密码
+    const newHash = await hashPassword(newPassword);
+    savePasswordHash(newHash);
+    setPasswordMsg("密码修改成功！下次登录时将使用新密码");
+    setPasswordMsgType("success");
+    setOldPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   const handleProductChange = (index: number, field: string, value: any) => {
@@ -837,6 +925,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
 
   return (
     <>
+      {/* 仪表盘只读入口按钮 (独立于管理面板，无需密码) */}
+      <button
+        className={styles.adminTrigger}
+        style={{ bottom: "78px" }}
+        onClick={() => setIsDashboardReadOnlyOpen(true)}
+        aria-label="Open analytics dashboard"
+        title="网站数据仪表盘（只读）"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M18 20V10" /><path d="M12 20V4" /><path d="M6 20v-6" />
+        </svg>
+      </button>
+
       {/* Floating Gear Button in Corner */}
       <button 
         className={styles.adminTrigger} 
@@ -893,10 +994,32 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
             </form>
           </div>
         ) : (
-          /* Editor Dashboard view */
+          /* 已登录管理面板视图 */
           <>
+            {/* Tab 切换栏 */}
+            <div className={styles.tabBar}>
+              <button
+                className={`${styles.tabItem} ${activeTab === "dashboard" ? styles.tabActive : ""}`}
+                onClick={() => setActiveTab("dashboard")}
+              >
+                📊 数据仪表盘
+              </button>
+              <button
+                className={`${styles.tabItem} ${activeTab === "editor" ? styles.tabActive : ""}`}
+                onClick={() => setActiveTab("editor")}
+              >
+                📝 内容编辑器
+              </button>
+            </div>
+
             <div className={styles.content}>
-              {/* Accordion List */}
+              {/* 仪表盘 Tab */}
+              {activeTab === "dashboard" && (
+                <Dashboard readOnly={false} />
+              )}
+
+              {/* 内容编辑器 Tab */}
+              {activeTab === "editor" && (
               <div className={styles.accordionList}>
                 {/* 1. 全局导航配置 */}
                 <div className={`${styles.accordionSection} ${activeSection === "navbar" ? styles.sectionExpanded : ""}`}>
@@ -1506,7 +1629,74 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
                     </div>
                   </div>
                 </div>
+
+                {/* 7. 安全设置 */}
+                <div className={`${styles.accordionSection} ${activeSection === "security" ? styles.sectionExpanded : ""}`}>
+                  <button 
+                    type="button" 
+                    className={styles.accordionHeader} 
+                    onClick={() => setActiveSection(activeSection === "security" ? "" : "security")}
+                  >
+                    <span>🔐 安全设置</span>
+                    <svg className={styles.accordionArrow} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+                  <div className={styles.accordionContent}>
+                    <form onSubmit={handleChangePassword}>
+                      <div className={styles.formGroup}>
+                        <label>当前密码</label>
+                        <input 
+                          type="password" 
+                          className={styles.inputField} 
+                          value={oldPassword} 
+                          onChange={(e) => setOldPassword(e.target.value)} 
+                          placeholder="请输入当前管理密码"
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label>新密码</label>
+                        <input 
+                          type="password" 
+                          className={styles.inputField} 
+                          value={newPassword} 
+                          onChange={(e) => setNewPassword(e.target.value)} 
+                          placeholder="至少 4 位字符"
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label>确认新密码</label>
+                        <input 
+                          type="password" 
+                          className={styles.inputField} 
+                          value={confirmPassword} 
+                          onChange={(e) => setConfirmPassword(e.target.value)} 
+                          placeholder="再次输入新密码"
+                        />
+                      </div>
+                      {passwordMsg && (
+                        <div style={{
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: passwordMsgType === "success" ? "#30d158" : "var(--color-accent-red)",
+                          marginBottom: "12px",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          background: passwordMsgType === "success" 
+                            ? "rgba(48, 209, 88, 0.1)" 
+                            : "rgba(255, 69, 58, 0.1)",
+                        }}>
+                          {passwordMsg}
+                        </div>
+                      )}
+                      <button type="submit" className={styles.saveBtn} style={{ width: "100%" }}>
+                        保存新密码
+                      </button>
+                    </form>
+                  </div>
+                </div>
               </div>
+              )}
             </div>
 
             <div className={styles.footer}>
@@ -1539,6 +1729,26 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
             </div>
           </>
         )}
+      </div>
+
+      {/* 只读仪表盘浮层 */}
+      <div 
+        className={`${styles.drawerOverlay} ${isDashboardReadOnlyOpen ? styles.drawerOverlayActive : ""}`} 
+        onClick={() => setIsDashboardReadOnlyOpen(false)}
+      ></div>
+      <div className={`${styles.drawer} ${isDashboardReadOnlyOpen ? styles.drawerActive : ""}`}>
+        <div className={styles.header}>
+          <h3>📊 网站数据仪表盘</h3>
+          <button className={styles.closeBtn} onClick={() => setIsDashboardReadOnlyOpen(false)} aria-label="Close dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div className={styles.content}>
+          <Dashboard readOnly={true} />
+        </div>
       </div>
 
       {toastMsg && (

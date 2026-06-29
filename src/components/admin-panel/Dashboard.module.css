@@ -1,0 +1,205 @@
+/* ─── 仪表盘布局与样式 ─────────────────────────── */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-bottom: 24px;
+}
+
+/* 模块区域 */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sectionIcon {
+  font-size: 16px;
+}
+
+/* 统计卡片网格 */
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* 图表卡片容器 */
+.chartCard {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.chartTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* 设备分布条 */
+.deviceRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.deviceBar {
+  display: flex;
+  width: 100%;
+  height: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+.deviceSegment {
+  height: 100%;
+  transition: width 0.6s var(--ease-apple);
+}
+
+.deviceLabels {
+  display: flex;
+  justify-content: space-around;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* 热门版块排名列表 */
+.topList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.topItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.topItem:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.topRank {
+  font-size: 18px;
+  width: 28px;
+  text-align: center;
+}
+
+.topLabel {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.topValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-link);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 预约表格容器 */
+.tableContainer {
+  margin-top: 4px;
+}
+
+/* 刷新按钮 */
+.refreshBtn {
+  align-self: center;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-apple);
+}
+
+.refreshBtn:hover {
+  background: var(--color-surface);
+  border-color: var(--color-link);
+  color: var(--color-link);
+  box-shadow: 0 4px 12px rgba(41, 151, 255, 0.1);
+}
+
+.refreshBtn:active {
+  transform: scale(0.97);
+}
+
+/* 空状态提示 */
+.emptyHint {
+  padding: 30px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  background: var(--color-surface-elevated);
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+/* 加载状态 */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.loadingSpinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-link);
+  border-radius: 50%;
+  animation: spinDash 0.8s linear infinite;
+}
+
+@keyframes spinDash {
+  to {
+    transform: rotate(360deg);
+  }
+}

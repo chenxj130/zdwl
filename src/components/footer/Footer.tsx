@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./Footer.module.css";
+import { addBooking } from "../../utils/analyticsStorage";
 
 interface FooterLink {
   text: string;
@@ -104,6 +105,9 @@ const Footer: React.FC<FooterProps> = ({ data, lang = "zh" }) => {
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bookingName.trim() || !bookingPhone.trim()) return;
+
+    // NOTE: 先将预约数据持久化到 LocalStorage，再唤起问卷弹窗
+    addBooking(bookingName.trim(), bookingPhone.trim());
 
     // 唤起金数据/腾讯问卷提示模态框，并清空输入
     setShowModal(true);
