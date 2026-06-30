@@ -332,8 +332,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
     e.preventDefault();
     setErrorMsg("");
 
-    // NOTE: 统一使用配置文件中的密码哈希验证，无明文后备密码
-    const storedHash = siteData.adminPasswordHash || getStoredPasswordHash();
+    // 优先读取本地 LocalStorage 缓存修改后的哈希，其次读取环境变量，最后使用默认兜底哈希
+    const defaultHash = (import.meta.env.VITE_ADMIN_PASSWORD_HASH as string) || "a0058c919f09b84f4d5f2e28038ebb8390bb3daacf0de8b663de8b00ccefdcfc";
+    const storedHash = getStoredPasswordHash() || defaultHash;
 
     if (!storedHash) {
       setErrorMsg("管理员密码未配置，请联系管理员");
@@ -372,8 +373,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       return;
     }
 
-    // 验证旧密码（读取配置文件哈希 → 本地 LocalStorage 缓存）
-    const storedHash = siteData.adminPasswordHash || getStoredPasswordHash();
+    // 验证旧密码，优先读取本地 LocalStorage 缓存修改后的哈希，其次读取环境变量，最后使用默认兜底哈希
+    const defaultHash = (import.meta.env.VITE_ADMIN_PASSWORD_HASH as string) || "a0058c919f09b84f4d5f2e28038ebb8390bb3daacf0de8b663de8b00ccefdcfc";
+    const storedHash = getStoredPasswordHash() || defaultHash;
     if (!storedHash) {
       setPasswordMsg("管理员密码未配置，无法修改");
       setPasswordMsgType("error");
@@ -414,8 +416,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
       footer: {
         disclaimer: footerDisclaimer, address: footerAddress,
         phone: footerPhone, email: footerEmail, copyright: footerCopyright, columns: footerColumns
-      },
-      adminPasswordHash: newHash
+      }
     };
 
     setIsSaving(true);
@@ -726,8 +727,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ siteData, onSave }) => {
         email: footerEmail,
         copyright: footerCopyright,
         columns: footerColumns
-      },
-      adminPasswordHash: siteData.adminPasswordHash
+      }
     };
 
     const token = localStorage.getItem("admin_token") || "";

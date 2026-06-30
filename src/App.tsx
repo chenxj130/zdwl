@@ -153,9 +153,9 @@ const App: React.FC = () => {
           needSave = true;
         }
 
-        // 自动升级缺失的管理员密码哈希（保障旧缓存用户登录）
-        if (!parsed.adminPasswordHash) {
-          parsed.adminPasswordHash = DEFAULT_SITE_DATA.adminPasswordHash;
+        // 移除旧版 localStorage 中缓存的密码哈希以确保安全性
+        if (parsed.adminPasswordHash) {
+          delete parsed.adminPasswordHash;
           needSave = true;
         }
 
@@ -196,9 +196,9 @@ const App: React.FC = () => {
           needSave = true;
         }
 
-        // 自动升级缺失的管理员密码哈希
-        if (!parsed.adminPasswordHash) {
-          parsed.adminPasswordHash = DEFAULT_SITE_DATA_EN.adminPasswordHash;
+        // 移除旧版 localStorage 中缓存的密码哈希以确保安全性
+        if (parsed.adminPasswordHash) {
+          delete parsed.adminPasswordHash;
           needSave = true;
         }
 
