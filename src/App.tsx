@@ -141,11 +141,21 @@ const App: React.FC = () => {
               needSave = true;
               return { ...exp, detail: "极致微小店型 MVP餐饮模型验证创业。" };
             }
+            if (exp.detail && exp.detail.startsWith("创办深圳智鼎味来科技有限，")) {
+              needSave = true;
+              return { ...exp, detail: exp.detail.replace("创办深圳智鼎味来科技有限，", "创办深圳智鼎味来科技有限公司，") };
+            }
             return exp;
           });
         }
         if (parsed.footer && parsed.footer.email === "aicaic@agent.qq.com") {
           parsed.footer.email = "aicooking@agent.qq.com";
+          needSave = true;
+        }
+
+        // 自动升级缺失的管理员密码哈希（保障旧缓存用户登录）
+        if (!parsed.adminPasswordHash) {
+          parsed.adminPasswordHash = DEFAULT_SITE_DATA.adminPasswordHash;
           needSave = true;
         }
 
@@ -183,6 +193,12 @@ const App: React.FC = () => {
         // 自动升级旧邮箱
         if (parsed.footer && parsed.footer.email === "aicaic@agent.qq.com") {
           parsed.footer.email = "aicooking@agent.qq.com";
+          needSave = true;
+        }
+
+        // 自动升级缺失的管理员密码哈希
+        if (!parsed.adminPasswordHash) {
+          parsed.adminPasswordHash = DEFAULT_SITE_DATA_EN.adminPasswordHash;
           needSave = true;
         }
 
