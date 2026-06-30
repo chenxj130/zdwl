@@ -174,7 +174,7 @@ const DEFAULT_STORY_EXPERIENCES: FounderExperience[] = [
   },
   {
     time: "2023年10月至2024年5月",
-    detail: "高效餐饮模型验证创业。"
+    detail: "极致微小店型 MVP餐饮模型验证创业。"
   },
   {
     time: "2024年6月至今",

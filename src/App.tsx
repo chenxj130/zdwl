@@ -133,6 +133,22 @@ const App: React.FC = () => {
           parsed.footer.email = DEFAULT_SITE_DATA.footer.email;
           needSave = true;
         }
+
+        // 自动升级旧的创始人故事经历文案与邮箱
+        if (parsed.founder?.story?.experiences) {
+          parsed.founder.story.experiences = parsed.founder.story.experiences.map((exp: any) => {
+            if (exp.detail === "高效餐饮模型验证创业。") {
+              needSave = true;
+              return { ...exp, detail: "极致微小店型 MVP餐饮模型验证创业。" };
+            }
+            return exp;
+          });
+        }
+        if (parsed.footer && parsed.footer.email === "aicaic@agent.qq.com") {
+          parsed.footer.email = "aicooking@agent.qq.com";
+          needSave = true;
+        }
+
         if (needSave) {
           localStorage.setItem("site_data_zh", JSON.stringify(parsed));
           localStorage.setItem("site_data", JSON.stringify(parsed));
@@ -163,6 +179,13 @@ const App: React.FC = () => {
           parsed.footer.email = DEFAULT_SITE_DATA_EN.footer.email;
           needSave = true;
         }
+
+        // 自动升级旧邮箱
+        if (parsed.footer && parsed.footer.email === "aicaic@agent.qq.com") {
+          parsed.footer.email = "aicooking@agent.qq.com";
+          needSave = true;
+        }
+
         if (needSave) {
           localStorage.setItem("site_data_en", JSON.stringify(parsed));
         }
